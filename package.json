@@ -1,0 +1,32 @@
+{
+  "name": "prov-viz",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asalihi/prov-viz"
+  },
+  "author": {
+    "name": "BBP-Nexus",
+    "email": "arber.salihi@epfl.ch"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asalihi/prov-viz/issues"
+  },
+  "module": "prov-viz.js",
+  "typings": "prov-viz.d.ts",
+  "dependencies": {
+    "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.25",
+    "dagre-d3": "git://github.com/asalihi/dagre-d3.git#d3v4",
+    "lodash": "^4.17.4",
+    "uuid": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@angular/core": "^4.0.0",
+    "rxjs": "^5.1.0",
+    "zone.js": "^0.8.4"
+  }
+}
