@@ -1,67 +1,75 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ng-bootstrap/ng-bootstrap'), require('lodash'), require('uuid'), require('d3'), require('dagre-d3')) :
-	typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', '@ng-bootstrap/ng-bootstrap', 'lodash', 'uuid', 'd3', 'dagre-d3'], factory) :
-	(factory((global['prov-viz'] = global['prov-viz'] || {}),global._angular_core,global._angular_common,global._ngBootstrap_ngBootstrap,global._,global.uuid,global.d3,global.dagreD3));
-}(this, (function (exports,_angular_core,_angular_common,_ngBootstrap_ngBootstrap,_,uuid,d3,dagreD3) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ng-bootstrap/ng-bootstrap'), require('lodash'), require('d3'), require('dagre-d3')) :
+	typeof define === 'function' && define.amd ? define(['exports', '@angular/core', '@angular/common', '@ng-bootstrap/ng-bootstrap', 'lodash', 'd3', 'dagre-d3'], factory) :
+	(factory((global['prov-viz'] = global['prov-viz'] || {}),global._angular_core,global._angular_common,global._ngBootstrap_ngBootstrap,global._,global.d3,global.dagreD3));
+}(this, (function (exports,_angular_core,_angular_common,_ngBootstrap_ngBootstrap,_,d3,dagreD3) { 'use strict';
 
 var Node = (function () {
     /**
-     * @param {?} type
-     * @param {?=} subType
-     * @param {?=} id
+     * Constructor of Node
+     * @param {?} id (optional) Identifier of the Node (if empty, temporary identifier is created; pattern: 'temp_<UUID>' where UUID complies with V1)
+     * @param {?=} type Type of Node according to Provenance specification in context of Provenance graph, null otherwise
+     * @param {?=} subType (optional) Subtype of Node (by default, null)
      * @param {?=} label
      */
-    function Node(type, subType, id, label) {
-        this.v = id || "temp_" + uuid.v1();
+    function Node(id, type, subType, label) {
+        this.v = id;
         this.value = {};
-        this.value['type'] = type;
+        this.value['type'] = type || null;
         this.value['label'] = label || this.getLabel();
         this.value['subType'] = subType || null;
     }
     /**
-     * @return {?}
+     * Getter: identifier
+     * @return {?} Identifier of the Node
      */
     Node.prototype.getId = function () {
         return this.v;
     };
     /**
-     * @param {?} id
+     * Setter: identifier
+     * @param {?} id Identifier of the Node
      * @return {?}
      */
     Node.prototype.setId = function (id) {
         this.v = id;
     };
     /**
-     * @return {?}
+     * Getter: type
+     * @return {?} Type of the Node
      */
     Node.prototype.getType = function () {
         return this.value['type'];
     };
     /**
-     * @return {?}
+     * Getter: label
+     * @return {?} Label of the Node
      */
     Node.prototype.getLabel = function () {
-        return this.value['label'] || this.value['type'].toUpperCase();
+        return this.value['label'] || (this.value['type'] && this.value['type'].toUpperCase()) || this.v;
     };
     /**
-     * @param {?} property
-     * @return {?}
+     * Generic getter
+     * @param {?} property Property to be retrieved
+     * @return {?} Value associated to property if property exists, null otherwise
      */
     Node.prototype.get = function (property) {
         return this.value[property];
     };
     /**
-     * @param {?} property
-     * @param {?} value
+     * Generic setter
+     * @param {?} property Property for which new value must be set
+     * @param {?} value New value to associate with property
      * @return {?}
      */
     Node.prototype.set = function (property, value) {
         this.value[property] = value;
     };
     /**
-     * @param {?} property
-     * @param {?} element
-     * @param {?=} key
+     * Appends element for given property if aforesaid property exists
+     * @param {?} property Property for which element must be appended
+     * @param {?} element Element to append
+     * @param {?=} key (optional) Key if property is an Object
      * @return {?}
      */
     Node.prototype.append = function (property, element, key) {
@@ -70,9 +78,10 @@ var Node = (function () {
         }
     };
     /**
-     * @param {?} property
-     * @param {?} element
-     * @param {?=} key
+     * Appends element for given property based on type of attribute
+     * @param {?} property Property for which element must be appended
+     * @param {?} element Element to append
+     * @param {?=} key (optional) Key if property is an Object
      * @return {?}
      */
     Node.prototype.appendElement = function (property, element, key) {
@@ -91,9 +100,10 @@ var Node = (function () {
 
 var Edge = (function () {
     /**
-     * @param {?} source
-     * @param {?} target
-     * @param {?=} label
+     * Constructor of Edge
+     * @param {?} source Identifier of source of the edge
+     * @param {?} target Identifier of target of the edge
+     * @param {?=} label (optional) Label to be displayed on the edge
      */
     function Edge(source, target, label) {
         this.v = source;
@@ -102,47 +112,62 @@ var Edge = (function () {
         this.value['label'] = label || this.getLabel();
     }
     /**
-     * @return {?}
+     * Getter: source
+     * @return {?} Identifier of source of the edge
      */
     Edge.prototype.getSource = function () {
         return this.v;
     };
     /**
-     * @param {?} source
+     * Setter: source
+     * @param {?} source Identifier of source of the edge
      * @return {?}
      */
     Edge.prototype.setSource = function (source) {
         this.v = source;
     };
     /**
-     * @return {?}
+     * Getter: target
+     * @return {?} Identifier of target of the edge
      */
     Edge.prototype.getTarget = function () {
         return this.w;
     };
     /**
-     * @param {?} target
+     * Setter: target
+     * @param {?} target Identifier of target of the edge
      * @return {?}
      */
     Edge.prototype.setTarget = function (target) {
         this.w = target;
     };
     /**
-     * @return {?}
+     * Getter: label
+     * @return {?} Label of the edge
      */
     Edge.prototype.getLabel = function () {
         return this.value['label'] || '';
     };
     /**
-     * @param {?} property
+     * Setter: label
+     * @param {?} label Label of the edge
      * @return {?}
      */
-    Edge.prototype.get = function (property) {
-        return this.value[property];
+    Edge.prototype.setLabel = function (label) {
+        this.value['label'] = label;
     };
     /**
-     * @param {?} property
-     * @param {?} value
+     * Generic getter
+     * @param {?} property Property to be retrieved
+     * @return {?} Value associated to property if property exists, null otherwise
+     */
+    Edge.prototype.get = function (property) {
+        return this.value[property] || null;
+    };
+    /**
+     * Generic setter
+     * @param {?} property Property for which new value must be set
+     * @param {?} value New value to associate with property
      * @return {?}
      */
     Edge.prototype.set = function (property, value) {
@@ -155,42 +180,68 @@ var MapperService = (function () {
     function MapperService() {
     }
     /**
-     * @param {?=} input
-     * @return {?}
+     * Formats the input data
+     * @param {?=} input (optional) Data to be formatted as graphlib instance
+     * @return {?} Formatted data (graphlib instance) if input, null otherwise
      */
     MapperService.prototype.format = function (input) {
         if (input) {
             this.input = input;
-            this.createCompleteGraph();
-            this.createSimplifiedGraph();
-            return { simplified: this.simplifiedGraph, extended: this.completeGraph };
+            this.direction = this.input['graph']['direction'] || MapperService.defaultDirection;
+            if (this.input['graph'] && (this.input['graph']['type'] === 'Provenance')) {
+                this.createProvenanceGraph();
+                return { provenance: true, simplified: this.simplifiedGraph, extended: this.completeGraph };
+            }
+            else {
+                this.createGenericGraph();
+                return { provenance: false, extended: this.completeGraph };
+            }
         }
         else {
             return null;
         }
     };
     /**
+     * Creates graph of a Provenance trail
+     * @return {?}
+     */
+    MapperService.prototype.createProvenanceGraph = function () {
+        this.createCompleteGraph();
+        this.createSimplifiedGraph();
+    };
+    /**
+     * Creates a generic graph
+     * @return {?}
+     */
+    MapperService.prototype.createGenericGraph = function () {
+        this.createCompleteGraph();
+    };
+    /**
+     * Creates the full graph associated to given Provenance trail
      * @return {?}
      */
     MapperService.prototype.createCompleteGraph = function () {
+        this.nodes = new Array();
+        this.edges = new Array();
         this.convertNodesAndEdges();
-        this.completeGraph = { value: { rankdir: 'BT' }, nodes: this.nodes, edges: this.edges };
+        this.completeGraph = { value: { rankdir: this.direction }, nodes: this.nodes, edges: this.edges };
     };
     /**
+     * Creates the simplified version of the graph associated to given Provenance trail
      * @return {?}
      */
     MapperService.prototype.createSimplifiedGraph = function () {
+        this.simplifiedNodes = new Array();
+        this.simplifiedEdges = new Array();
+        this.cloneDeepNodesAndEdges();
         this.convertNodesAndEdgesForSimpleGraph();
-        this.simplifiedGraph = { value: { rankdir: 'BT' }, nodes: this.simplifiedNodes, edges: this.simplifiedEdges };
+        this.simplifiedGraph = { value: { rankdir: this.direction }, nodes: this.simplifiedNodes, edges: this.simplifiedEdges };
     };
     /**
+     * Converts all the Nodes and Edges from JSON-GRAPH to graphlib representation
      * @return {?}
      */
     MapperService.prototype.convertNodesAndEdges = function () {
-        this.nodes = new Array();
-        this.simplifiedNodes = new Array();
-        this.edges = new Array();
-        this.simplifiedEdges = new Array();
         if (this.input['graph']['nodes']) {
             this.convertNodes();
         }
@@ -199,38 +250,44 @@ var MapperService = (function () {
         }
     };
     /**
+     * Converts all the Nodes from JSON-GRAPH to graphlib representation
      * @return {?}
      */
     MapperService.prototype.convertNodes = function () {
         for (var _i = 0, _a = this.input['graph']['nodes']; _i < _a.length; _i++) {
             var jsonGraphNode = _a[_i];
-            var /** @type {?} */ type = jsonGraphNode['type'];
+            var /** @type {?} */ id = jsonGraphNode['id'];
+            var /** @type {?} */ type = jsonGraphNode['type'] || null;
             var /** @type {?} */ subType = (jsonGraphNode['metadata'] && jsonGraphNode['metadata']['subType']) || null;
             var /** @type {?} */ label = jsonGraphNode['label'] || null;
-            var /** @type {?} */ node = new Node(type, subType, jsonGraphNode['id'], label);
+            var /** @type {?} */ node = new Node(id, type, subType, label);
             for (var /** @type {?} */ key in jsonGraphNode['metadata']) {
                 node.set(key, jsonGraphNode['metadata'][key]);
             }
             node.set('labelType', 'html');
-            this.appendNode(node);
+            this.nodes.push(node);
         }
     };
     /**
+     * Converts all the Edges from JSON-GRAPH to graphlib representation
      * @return {?}
      */
     MapperService.prototype.convertEdges = function () {
         for (var _i = 0, _a = this.input['graph']['edges']; _i < _a.length; _i++) {
             var jsonGraphEdge = _a[_i];
             if (this.checkIfSourceAndTargetExist(jsonGraphEdge)) {
-                var /** @type {?} */ edge = new Edge(jsonGraphEdge['source'], jsonGraphEdge['target']);
+                var /** @type {?} */ source = jsonGraphEdge['source'];
+                var /** @type {?} */ target = jsonGraphEdge['target'];
+                var /** @type {?} */ edge = new Edge(source, target);
                 for (var /** @type {?} */ key in jsonGraphEdge['metadata']) {
                     edge.set(key, jsonGraphEdge['metadata'][key]);
                 }
-                this.appendEdge(edge);
+                this.edges.push(edge);
             }
         }
     };
     /**
+     * Converts all Nodes and Edges to build simplified version of graph
      * @return {?}
      */
     MapperService.prototype.convertNodesAndEdgesForSimpleGraph = function () {
@@ -239,6 +296,7 @@ var MapperService = (function () {
         this.removeActivities();
     };
     /**
+     * Removes all the Agents from the Provenance trail and associated Edges
      * @return {?}
      */
     MapperService.prototype.removeAgents = function () {
@@ -247,6 +305,7 @@ var MapperService = (function () {
         this.simplifiedEdges = this.simplifiedEdges.filter(function (e) { return !(_.includes(agentsId, e.getSource()) && !(_.includes(agentsId, e.getTarget()))); });
     };
     /**
+     * Merges all the Resources with their respective Datasets
      * @return {?}
      */
     MapperService.prototype.mergeDatasetsAndRelatedResources = function () {
@@ -257,7 +316,9 @@ var MapperService = (function () {
         }
     };
     /**
-     * @param {?} dataset
+     * Merge all the Resources of a given Dataset
+     * @param {?} dataset Dataset for which Resources must be merged with
+     * IMPORTANT: dataset is modified through the function and by inner function
      * @return {?}
      */
     MapperService.prototype.mergeDatasetAndRelatedResources = function (dataset) {
@@ -274,8 +335,9 @@ var MapperService = (function () {
         }
     };
     /**
-     * @param {?} dataset
-     * @param {?} resource
+     * Links a given Dataset with all Elements that are linked with Resource it is linked with
+     * @param {?} dataset Dataset to be considered for linking
+     * @param {?} resource Resource linked with the Dataset
      * @return {?}
      */
     MapperService.prototype.linkDatasetWithElementsRelatedToResource = function (dataset, resource) {
@@ -287,15 +349,18 @@ var MapperService = (function () {
         }
     };
     /**
-     * @param {?} dataset
-     * @param {?} resources
+     * Changes the label of a Dataset to show number of Resources it contains
+     * @param {?} dataset Dataset for which label is modified
+     * @param {?} resources Resources linked to the Dataset
+     * IMPORTANT: dataset is modified through the function
      * @return {?}
      */
     MapperService.prototype.changeLabelOfDataset = function (dataset, resources) {
         dataset.append('label', "<br>" + resources.length + " resource" + (resources.length > 1 ? 's' : ''));
     };
     /**
-     * @param {?} resourcesId
+     * Removes all the resources from the simplified version of the graph
+     * @param {?} resourcesId Identifiers of all the resources
      * @return {?}
      */
     MapperService.prototype.removeResourcesFromSimplifiedGraph = function (resourcesId) {
@@ -303,6 +368,7 @@ var MapperService = (function () {
         this.simplifiedEdges = this.simplifiedEdges.filter(function (e) { return !_.includes(resourcesId, e.getSource()) && !_.includes(resourcesId, e.getTarget()); });
     };
     /**
+     * Removes all activities from the simplified version of the graph
      * @return {?}
      */
     MapperService.prototype.removeActivities = function () {
@@ -314,7 +380,8 @@ var MapperService = (function () {
         this.simplifiedNodes = this.simplifiedNodes.filter(function (n) { return n.getType() === 'entity'; });
     };
     /**
-     * @param {?} activity
+     * Creates edges between all sources and generated entities of a given activity
+     * @param {?} activity Activity to be considered for creation of edges between sources and generated entities
      * @return {?}
      */
     MapperService.prototype.linkSourcesAndGeneratedEntitiesOfActivity = function (activity) {
@@ -330,24 +397,37 @@ var MapperService = (function () {
         this.simplifiedEdges = this.simplifiedEdges.filter(function (e) { return !(e.getSource() === activity.getId()) && !(e.getTarget() === activity.getId()); });
     };
     /**
-     * @param {?} node
+     * Clones Nodes and Edges of the complete graph
      * @return {?}
      */
-    MapperService.prototype.appendNode = function (node) {
-        this.nodes.push(node);
-        this.simplifiedNodes.push(_.cloneDeep(_.toPlainObject(node)));
+    MapperService.prototype.cloneDeepNodesAndEdges = function () {
+        this.cloneDeepNodes();
+        this.cloneDeepEdges();
     };
     /**
-     * @param {?} edge
+     * Clones Nodes of the complete graph
      * @return {?}
      */
-    MapperService.prototype.appendEdge = function (edge) {
-        this.edges.push(edge);
-        this.simplifiedEdges.push(_.cloneDeep(_.toPlainObject(edge)));
+    MapperService.prototype.cloneDeepNodes = function () {
+        for (var _i = 0, _a = this.nodes; _i < _a.length; _i++) {
+            var node = _a[_i];
+            this.simplifiedNodes.push(_.cloneDeep(_.toPlainObject(node)));
+        }
     };
     /**
-     * @param {?} jsonGraphEdge
+     * Clones Edges of the complete graph
      * @return {?}
+     */
+    MapperService.prototype.cloneDeepEdges = function () {
+        for (var _i = 0, _a = this.edges; _i < _a.length; _i++) {
+            var edge = _a[_i];
+            this.simplifiedEdges.push(_.cloneDeep(_.toPlainObject(edge)));
+        }
+    };
+    /**
+     * Checks if an Edge is valid (both source and target exist in the graph)
+     * @param {?} jsonGraphEdge JSON-GRAPH Edge to be validated
+     * @return {?} True if Edge is valid, false otherwise
      */
     MapperService.prototype.checkIfSourceAndTargetExist = function (jsonGraphEdge) {
         var /** @type {?} */ source = this.nodes.find(function (n) { return n.getId() === jsonGraphEdge['source']; });
@@ -356,6 +436,7 @@ var MapperService = (function () {
     };
     return MapperService;
 }());
+MapperService.defaultDirection = 'BT';
 MapperService.decorators = [
     { type: _angular_core.Injectable },
 ];
@@ -392,9 +473,10 @@ var EVENTS = {
     }
 };
 /**
- * @param {?} eventName
- * @param {?} element
- * @param {?} nodeId
+ * Dispatches a Node event
+ * @param {?} eventName Name of the event to be dispatched
+ * @param {?} element DOM element on which Node event must be dispatched
+ * @param {?} nodeId Identifier of the Node related to the event
  * @return {?}
  */
 function dispatchNodeEvent(eventName, element, nodeId) {
@@ -406,9 +488,10 @@ function dispatchNodeEvent(eventName, element, nodeId) {
     dispatchEvent(element, event$$1);
 }
 /**
- * @param {?} eventName
- * @param {?} element
- * @param {?} data
+ * Dispatches an Edge event
+ * @param {?} eventName Name of the event to be dispatched
+ * @param {?} element DOM element on which Edge event must be dispatched
+ * @param {?} data Data containing relevant source and target of the Edge related to the event
  * @return {?}
  */
 function dispatchEdgeEvent(eventName, element, data) {
@@ -421,14 +504,16 @@ function dispatchEdgeEvent(eventName, element, data) {
     dispatchEvent(element, event$$1);
 }
 /**
- * @param {?} element
- * @param {?} event
+ * Dispatches a DOM event
+ * @param {?} element DOM element on which event must be dispatched
+ * @param {?} event Event to be dispatched
  * @return {?}
  */
 function dispatchEvent(element, event$$1) {
     element.dispatchEvent(event$$1);
 }
 
+var ALLOWED_SHAPES = ['rect', 'diamond', 'circle', 'ellipse'];
 var SHAPES = {
     'entity': 'ellipse',
     'activity': 'rect',
@@ -458,9 +543,10 @@ var DagreD3Renderer = (function () {
     function DagreD3Renderer() {
     }
     /**
-     * @param {?} containerElement
-     * @param {?} data
-     * @param {?=} options
+     * Initializes the renderer
+     * @param {?} containerElement DOM element where SVG will be attached
+     * @param {?} data Object containing graph to render
+     * @param {?=} options Options to associate with the renderer
      * @return {?}
      */
     DagreD3Renderer.initialize = function (containerElement, data, options) {
@@ -475,7 +561,8 @@ var DagreD3Renderer = (function () {
         DagreD3Renderer.constructGraph();
     };
     /**
-     * @param {?=} options
+     * Renders the graph
+     * @param {?=} options Options to associate with the renderer
      * @return {?}
      */
     DagreD3Renderer.renderGraph = function (options) {
@@ -489,15 +576,16 @@ var DagreD3Renderer = (function () {
         DagreD3Renderer.dispatch.call('graphRendered', this, DagreD3Renderer.containerElement);
     };
     /**
-     * @param {?=} delay
+     * Fits the content of the graph to the container
+     * @param {?=} delay (optional, default = 0) Delay of the transition
      * @return {?}
      */
     DagreD3Renderer.fit = function (delay) {
         if (delay === void 0) { delay = 0; }
         var /** @type {?} */ bounds = DagreD3Renderer.group.node().getBBox();
         var /** @type {?} */ parent = DagreD3Renderer.group.node().parentElement;
-        var /** @type {?} */ fullWidth = parent.clientWidth || parent.parentNode.clientWidth;
-        var /** @type {?} */ fullHeight = parent.clientHeight || parent.parentNode.clientHeight;
+        var /** @type {?} */ fullWidth = parent.clientWidth || parent.parentNode.clientWidth; // OR statement is needed to make it compatible with Chrome and Firefox
+        var /** @type {?} */ fullHeight = parent.clientHeight || parent.parentNode.clientHeight; // OR statement is needed to make it compatible with Chrome and Firefox
         var /** @type {?} */ width = bounds.width;
         var /** @type {?} */ height = bounds.height;
         var /** @type {?} */ midX = bounds.x + width / 2;
@@ -509,7 +597,8 @@ var DagreD3Renderer = (function () {
         }
     };
     /**
-     * @param {?=} delay
+     * Zooms in the graph
+     * @param {?=} delay (optional, default = 0) Delay of the transition
      * @return {?}
      */
     DagreD3Renderer.zoomIn = function (delay) {
@@ -517,7 +606,8 @@ var DagreD3Renderer = (function () {
         DagreD3Renderer.container.transition().duration(delay).call(DagreD3Renderer.zoom.scaleBy, DagreD3Renderer.zoomInMultiplicator);
     };
     /**
-     * @param {?=} delay
+     * Zooms out the graph
+     * @param {?=} delay (optional, default = 0) Delay of the transition
      * @return {?}
      */
     DagreD3Renderer.zoomOut = function (delay) {
@@ -525,15 +615,17 @@ var DagreD3Renderer = (function () {
         DagreD3Renderer.container.transition().duration(delay).call(DagreD3Renderer.zoom.scaleBy, DagreD3Renderer.zoomOutMultiplicator);
     };
     /**
+     * Removes rendered graph if any
      * @return {?}
      */
     DagreD3Renderer.flush = function () {
         d3.select(DagreD3Renderer.containerElement).selectAll('svg').remove();
     };
     /**
-     * @param {?} containerElement
-     * @param {?} data
-     * @param {?} options
+     * Sets the options related to the renderer
+     * @param {?} containerElement DOM element where SVG will be attached
+     * @param {?} data Object containing graph to render
+     * @param {?} options Options to associate with the renderer
      * @return {?}
      */
     DagreD3Renderer.setParameters = function (containerElement, data, options) {
@@ -546,36 +638,45 @@ var DagreD3Renderer = (function () {
         DagreD3Renderer.render = new dagreD3.render();
     };
     /**
+     * Sets events attached to the graph
      * @return {?}
      */
     DagreD3Renderer.setEvents = function () {
         DagreD3Renderer.dispatch = d3.dispatch.apply(d3, /** @type {?} */ ((Object.keys(EVENTS))));
         for (var /** @type {?} */ eventName in EVENTS) {
+            // For each event dispatched by the renderer, we fire the appropriate event from the container (DOM element)
             DagreD3Renderer.dispatch.on(eventName, EVENTS[eventName]);
         }
     };
     /**
+     * Sets the click on the graph event
      * @return {?}
      */
     DagreD3Renderer.setGraphClickEventListener = function () {
         DagreD3Renderer.container.on('click', function () {
+            // User clicked on the SVG element (graph)
             if (d3.event.srcElement.tagName == 'svg') {
                 var /** @type {?} */ mousePosition = d3.mouse(this);
+                // Data passed to the event: graph container, DOM element, mouse position (x and y coordinates)
                 DagreD3Renderer.dispatch.call('graphClicked', DagreD3Renderer.container, DagreD3Renderer.containerElement, mousePosition[0], mousePosition[1]);
             }
         });
     };
     /**
+     * Sets all custom shapes used by renderer (shapes are appended to the render function of the renderer)
      * @return {?}
      */
     DagreD3Renderer.setShapes = function () {
+        // See dagre-d3 documentation and demo example for mode details
         DagreD3Renderer.render.shapes()['hexagon'] = function (parent, bbox, node) { return DagreD3Renderer.createHexagon(parent, bbox, node); };
     };
     /**
-     * @param {?} parent
-     * @param {?} bbox
-     * @param {?} node
-     * @return {?}
+     * Creates and appends hexagon shape
+     * @param {?} parent Parent element that will hosts the polygon
+     * @param {?} bbox Bounding box of element
+     * @param {?} node Node represented by the element on the graph
+     * @return {?} Hexagon shape
+     * IMPORTANT: parent is modified through the function (polygon representing the shape is inserted)
      */
     DagreD3Renderer.createHexagon = function (parent, bbox, node) {
         var /** @type {?} */ w = bbox.width;
@@ -588,6 +689,7 @@ var DagreD3Renderer = (function () {
         return shape;
     };
     /**
+     * Formats all the Nodes
      * @return {?}
      */
     DagreD3Renderer.formatNodes = function () {
@@ -596,6 +698,7 @@ var DagreD3Renderer = (function () {
         }
     };
     /**
+     * Formats Node
      * @param {?} nodeId
      * @return {?}
      */
@@ -605,35 +708,42 @@ var DagreD3Renderer = (function () {
         DagreD3Renderer.setNodeStyle(node);
     };
     /**
-     * @param {?} node
+     * Sets the shape of the Node (by default, diamond is chosen)
+     * @param {?} node Node for which shape must be set
+     * IMPORTANT: Node is modified through the function (shape is set)
      * @return {?}
      */
     DagreD3Renderer.setNodeShape = function (node) {
         var /** @type {?} */ type = node.getType();
         var /** @type {?} */ subType = node.get('subType');
-        var /** @type {?} */ shape = SHAPES[type] || SHAPES[subType] || SHAPES['default'];
+        var /** @type {?} */ shape = SHAPES[type] || SHAPES[subType] || (node.get('shape') && _.includes(ALLOWED_SHAPES, node.get('shape')) ? node.get('shape') : SHAPES['default']);
         node.set('shape', shape);
     };
     /**
-     * @param {?} node
+     * Sets the style of the Node
+     * @param {?} node Node for which style must be set
+     * IMPORTANT: Node is modified by inner function
      * @return {?}
      */
     DagreD3Renderer.setNodeStyle = function (node) {
         DagreD3Renderer.setNodeColor(node);
     };
     /**
-     * @param {?} node
+     * Sets the color of the Node (by default, background is in white and borders are in black)
+     * @param {?} node Node for which color must be set
+     * IMPORTANT: Node is modified through the function (style is set)
      * @return {?}
      */
     DagreD3Renderer.setNodeColor = function (node) {
         var /** @type {?} */ type = node.getType();
         var /** @type {?} */ subType = node.get('subType');
-        var /** @type {?} */ colorProperties = COLORS[type] || COLORS[subType] || COLORS['default'];
-        var /** @type {?} */ backgroundColor = colorProperties['background'];
-        var /** @type {?} */ borderColor = colorProperties['border'];
+        var /** @type {?} */ colorProperties = COLORS[type] || COLORS[subType] || ((node.get('color') && _.isObject(node.get('color'))) ? node.get('color') : COLORS['default']);
+        var /** @type {?} */ backgroundColor = colorProperties['background'] || COLORS['default']['background'];
+        var /** @type {?} */ borderColor = colorProperties['border'] || COLORS['default']['border'];
         node.set('style', "fill: " + backgroundColor + "; stroke: " + borderColor + ";");
     };
     /**
+     * Formats all the Edges
      * @return {?}
      */
     DagreD3Renderer.formatEdges = function () {
@@ -642,39 +752,48 @@ var DagreD3Renderer = (function () {
         }
     };
     /**
-     * @param {?} edge
+     * Formats an Edge
+     * @param {?} edge Edge to be formatted
+     * IMPORTANT: Edge is modified by inner function
      * @return {?}
      */
     DagreD3Renderer.formatEdge = function (edge) {
         DagreD3Renderer.setEdgeStyle(edge);
     };
     /**
-     * @param {?} edge
+     * Sets style of the Edge
+     * @param {?} edge Edge for which style must be set
+     * IMPORTANT: Edge is modified by inner function
      * @return {?}
      */
     DagreD3Renderer.setEdgeStyle = function (edge) {
         DagreD3Renderer.setEdgeColor(edge);
     };
     /**
-     * @param {?} edge
+     * Sets the color of the Edge
+     * @param {?} edge Edge for which color must be set
+     * IMPORTANT: Node is modified through the function (style is set)
      * @return {?}
      */
     DagreD3Renderer.setEdgeColor = function (edge) {
-        edge.set('style', "fill: none; stroke: black; stroke-width: 1.5px;");
+        edge.set('style', 'fill: none; stroke: black; stroke-width: 1.5px;');
     };
     /**
+     * Constructs the graph (graph complies with graphlib format)
      * @return {?}
      */
     DagreD3Renderer.constructGraph = function () {
         DagreD3Renderer.graph = dagreD3.graphlib.json.read(DagreD3Renderer.data);
     };
     /**
+     * Sets events attached to the Nodes
      * @return {?}
      */
     DagreD3Renderer.setNodesEvents = function () {
         var _this = this;
         d3.selectAll('.node')
             .on('contextmenu', function () {
+            // We prevent the context menu from displaying when user CTRL+clicks
             d3.event.preventDefault();
         })
             .on('mousedown', function (nodeId) {
@@ -688,19 +807,21 @@ var DagreD3Renderer = (function () {
         });
     };
     /**
+     * Sets events attached to the Edges
      * @return {?}
      */
     DagreD3Renderer.setEdgesEvents = function () {
         var _this = this;
         d3.selectAll('.edgePath, .edgeLabel')
             .on('contextmenu', function () {
+            // We prevent the context menu from displaying when user CTRL+clicks
             d3.event.preventDefault();
         })
             .on('mousedown', function (e) {
             d3.event.stopPropagation();
             var /** @type {?} */ data = {};
-            data['sourceId'] = e['v'] || null;
-            data['targetId'] = e['w'] || null;
+            data['sourceId'] = e['v'] || null; // v represents source (see graphlib specification)
+            data['targetId'] = e['w'] || null; // w represents target (see graphlib specification)
             if (d3.event.ctrlKey) {
                 DagreD3Renderer.dispatch.call('edgeCtrlClicked', _this, DagreD3Renderer.containerElement, data);
             }
@@ -710,20 +831,23 @@ var DagreD3Renderer = (function () {
         });
     };
     /**
+     * Formats text displayed on SVG element
      * @return {?}
      */
     DagreD3Renderer.formatText = function () {
         DagreD3Renderer.container.selectAll('svg text').style('font', "300 14px 'Helvetica Neue', Helvetica");
     };
     /**
+     * Sets zoom functionality on the renderer
      * @return {?}
      */
     DagreD3Renderer.setZoom = function () {
         DagreD3Renderer.zoom = d3.zoom().on('zoom', function () { DagreD3Renderer.group.attr('transform', d3.event.transform); });
         DagreD3Renderer.container.call(DagreD3Renderer.zoom);
-        DagreD3Renderer.fit();
+        DagreD3Renderer.fit(); // By default, graph fits within the container
     };
     /**
+     * Sets the width and the height of the SVG element such that it fully expands
      * @return {?}
      */
     DagreD3Renderer.setWidthAndHeight = function () {
@@ -734,7 +858,8 @@ var DagreD3Renderer = (function () {
 
 var GraphComponent = (function () {
     /**
-     * @param {?} mapperService
+     * Constructor of DumperComponent
+     * @param {?} mapperService Injection of Mapper service
      */
     function GraphComponent(mapperService) {
         this.mapperService = mapperService;
@@ -742,50 +867,61 @@ var GraphComponent = (function () {
         this.initializeGraphEventsListeners();
     }
     /**
+     * Lifecycle hook called when view of component has been fully initialized
+     * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/AfterViewInit-class.html)
      * @return {?}
      */
     GraphComponent.prototype.ngAfterViewInit = function () {
         this.setGraphEventsListeners();
     };
     /**
+     * Lifecycle hook called when data-bound property of a directive changes
+     * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/OnChanges-class.html)
      * @param {?} changes
      * @return {?}
      */
     GraphComponent.prototype.ngOnChanges = function (changes) {
         this.rendering = true;
+        this.error = false;
         this.createGraph();
         this.displayGraph();
     };
     /**
-     * @param {?} mode
+     * Changes the mode for rendering graph (swtich between simplified and extended versions)
+     * @param {?} mode Selected mode for display
      * @return {?}
      */
     GraphComponent.prototype.changeMode = function (mode) {
         if (this.mode !== mode) {
-            this.mode = (mode === 'simplified' || mode === 'extended') ? mode : GraphComponent.defaultMode;
+            this.mode = (mode === GraphComponent.simplifiedMode || mode === GraphComponent.extendedMode) ? mode : GraphComponent.defaultMode;
             this.rendering = true;
+            this.error = false;
             this.displayGraph();
         }
     };
     /**
+     * Fits the content of the graph to the container with a delay of 500 ms
      * @return {?}
      */
     GraphComponent.prototype.fitContent = function () {
         DagreD3Renderer.fit(500);
     };
     /**
+     * Zooms in the graph with a delay of 250 ms
      * @return {?}
      */
     GraphComponent.prototype.zoomIn = function () {
         DagreD3Renderer.zoomIn(250);
     };
     /**
+     * Zooms out the graph with a delay of 250 ms
      * @return {?}
      */
     GraphComponent.prototype.zoomOut = function () {
         DagreD3Renderer.zoomOut(250);
     };
     /**
+     * Initializes the EventEmitter attached to the graph
      * @return {?}
      */
     GraphComponent.prototype.initializeGraphEventsListeners = function () {
@@ -795,11 +931,13 @@ var GraphComponent = (function () {
     };
     
     /**
+     * Sets the events listeners attached to the graph
      * @return {?}
      */
     GraphComponent.prototype.setGraphEventsListeners = function () {
         var _this = this;
         var /** @type {?} */ element = this.svgContainer.nativeElement;
+        // For graphRendered event, we append a specific event listener to inform component that rendering is done
         element.addEventListener('graphRendered', function (event$$1) {
             _this.rendering = false;
         });
@@ -813,32 +951,63 @@ var GraphComponent = (function () {
         }
     };
     /**
+     * Creates the graph based on data provided
      * @return {?}
      */
     GraphComponent.prototype.createGraph = function () {
-        this.graph = this.mapperService.format(this.data);
+        try {
+            this.graph = this.mapperService.format(this.data);
+        }
+        catch (e) {
+            this.handleError(e);
+        }
     };
     /**
+     * Displays the graph as SVG element
+     * NOTE: By default, a delay of 500 ms is set before displaying graph for better user experience (loading icon does not disappear too rapidly when rendering is instant)
      * @return {?}
      */
     GraphComponent.prototype.displayGraph = function () {
         var _this = this;
         setTimeout(function () {
-            DagreD3Renderer.initialize(_this.svgContainer.nativeElement, _this.graph[_this.mode]);
-            DagreD3Renderer.renderGraph();
+            try {
+                var /** @type {?} */ graphToDisplay = _this.graph['provenance'] ? _this.graph[_this.mode] : _this.graph[GraphComponent.extendedMode];
+                DagreD3Renderer.initialize(_this.svgContainer.nativeElement, graphToDisplay);
+                DagreD3Renderer.renderGraph();
+            }
+            catch (e) {
+                _this.handleError(e, true);
+            }
         }, 500);
+    };
+    /**
+     * Handles error
+     * @param {?} exception Exception raised during creation or rendering of the graph
+     * @param {?=} flush If set to true, any SVG element rendered in container is removed from it (default: false)
+     * @return {?}
+     */
+    GraphComponent.prototype.handleError = function (exception, flush) {
+        if (flush === void 0) { flush = false; }
+        this.rendering = false;
+        this.error = true;
+        console.error(exception);
+        if (flush) {
+            DagreD3Renderer.flush();
+        }
     };
     return GraphComponent;
 }());
 GraphComponent.defaultMode = 'simplified';
+GraphComponent.simplifiedMode = 'simplified';
+GraphComponent.extendedMode = 'extended';
 GraphComponent.decorators = [
     { type: _angular_core.Component, args: [{
                 selector: 'graph',
                 providers: [MapperService],
                 inputs: ['data:graph'],
                 outputs: ['ngGraphRendered', 'ngGraphClicked', 'ngNodeClicked', 'ngNodeCtrlClicked', 'ngEdgeClicked', 'ngEdgeCtrlClicked'],
-                template: "<div class=\"rendering\" *ngIf=\"rendering\"> <i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw fa-5x\"></i> </div> <div ngbDropdown class=\"select-view\" *ngIf=\"!rendering\"> <button id=\"selectView\" class=\"btn btn-primary\" ngbDropdownToggle>Mode</button> <div class=\"dropdown-menu\" aria-labelledby=\"selectView\"> <button id=\"simplifiedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='simplified'\" (click)=\"changeMode('simplified')\">Simplified</button> <button id=\"extendedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='extended'\" (click)=\"changeMode('extended')\">Extended</button> </div> </div> <div id=\"zoom-controls\" *ngIf=\"!rendering\"> <button id=\"zoom-fit\" class=\"btn btn-primary\" (click)=\"fitContent()\"><i class=\"fa fa-arrows-alt\"></i></button> <button id=\"zoom-in\" class=\"btn btn-primary\" (click)=\"zoomIn()\"><i class=\"fa fa-search-plus\"></i></button> <button id=\"zoom-out\" class=\"btn btn-primary\" (click)=\"zoomOut()\"><i class=\"fa fa-search-minus\"></i></button> </div> <div #svgContainer id=\"svg-container\"></div> ",
-                styles: [":host { height: 100%; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; border: 1px solid rgba(0, 0, 0, 0.15); overflow: hidden; } .rendering { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.025); } .rendering > i { align-self: center; color: #0275d8; } .select-view { position: absolute; top: 0; right: 0; padding-top: 10px; padding-right: 10px; } .select-view > .dropdown-menu { left: auto; right: 10px; } .selected { color: white; background-color: #0275d8; } #svg-container { width: 100%; height: 100%; margin: 20px; } #zoom-controls { display: flex; flex-direction: column; position: absolute; top: 0; left: 0; padding-left: 10px; } #zoom-controls > button { margin-top: 10px; } "]
+                template: "<div class=\"rendering\" *ngIf=\"rendering\"> <i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw fa-5x\"></i> </div> <div class=\"error\" *ngIf=\"error\"> <i class=\"fa fa fa-exclamation-circle fa-fw fa-5x\"></i> <br/> Graph could not be rendered. </div> <div ngbDropdown class=\"select-view\" *ngIf=\"!rendering && !error && graph && graph['provenance']\"> <button id=\"selectView\" class=\"btn btn-primary\" ngbDropdownToggle>Mode</button> <div class=\"dropdown-menu\" aria-labelledby=\"selectView\"> <button id=\"simplifiedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='simplified'\" (click)=\"changeMode('simplified')\">Simplified</button> <button id=\"extendedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='extended'\" (click)=\"changeMode('extended')\">Extended</button> </div> </div> <div id=\"zoom-controls\" *ngIf=\"!rendering && !error\"> <button id=\"zoom-fit\" class=\"btn btn-primary\" (click)=\"fitContent()\"><i class=\"fa fa-arrows-alt\"></i></button> <button id=\"zoom-in\" class=\"btn btn-primary\" (click)=\"zoomIn()\"><i class=\"fa fa-search-plus\"></i></button> <button id=\"zoom-out\" class=\"btn btn-primary\" (click)=\"zoomOut()\"><i class=\"fa fa-search-minus\"></i></button> </div> <div #svgContainer id=\"svg-container\"></div> ",
+                styles: [":host { height: 100%; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; border: 1px solid rgba(0, 0, 0, 0.15); overflow: hidden; } .rendering, .error { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; } .rendering { background-color: rgba(0, 0, 0, 0.025); } .error { background-color: rgba(255, 0, 0, 0.05); } .rendering > i { align-self: center; color: #0275d8; } .select-view { position: absolute; top: 0; right: 0; padding-top: 10px; padding-right: 10px; } .select-view > .dropdown-menu { left: auto; right: 10px; } .selected { color: white; background-color: #0275d8; } #svg-container { width: 100%; height: 100%; margin: 20px; } #zoom-controls { display: flex; flex-direction: column; position: absolute; top: 0; left: 0; padding-left: 10px; } #zoom-controls > button { margin-top: 10px; } "]
             },] },
 ];
 /**
