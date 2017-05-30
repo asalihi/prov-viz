@@ -44,14 +44,16 @@ export declare class Node {
      * Appends element for given property if aforesaid property exists
     * @param property Property for which element must be appended
     * @param element Element to append
+    * @param end Indicates if element must be appended at the end (by default, true)
     * @param key (optional) Key if property is an Object
     */
-    append(property: string, element: any, key?: string): void;
+    append(property: string, element: any, end?: boolean, key?: string): void;
     /**
      * Appends element for given property based on type of attribute
      * @param property Property for which element must be appended
      * @param element Element to append
      * @param key (optional) Key if property is an Object
+     * @param end Indicates if element must be appended at the end
      */
-    private appendElement(property, element, key?);
+    private appendElement(property, element, end, key?);
 }

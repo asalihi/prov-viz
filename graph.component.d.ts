@@ -1,7 +1,11 @@
 import { EventEmitter } from '@angular/core';
 import { MapperService } from './mapper.service';
+import { GraphFormatterService } from './graph-formatter.service';
+import { DagreD3RendererService } from './dagre-d3-renderer.service';
 export declare class GraphComponent {
     private mapperService;
+    private graphFormatterService;
+    private dagreD3RendererService;
     private static readonly defaultMode;
     private static readonly simplifiedMode;
     private static readonly extendedMode;
@@ -9,19 +13,21 @@ export declare class GraphComponent {
     private rendering;
     private error;
     private graph;
+    private formattedGraph;
     data: Object;
     svgContainer: any;
     ngGraphRendered: EventEmitter<Object>;
     ngGraphClicked: EventEmitter<Object>;
     ngNodeClicked: EventEmitter<Object>;
     ngNodeCtrlClicked: EventEmitter<Object>;
+    ngNodeExpanded: EventEmitter<Object>;
     ngEdgeClicked: EventEmitter<Object>;
     ngEdgeCtrlClicked: EventEmitter<Object>;
     /**
      * Constructor of DumperComponent
      * @param mapperService Injection of Mapper service
      */
-    constructor(mapperService: MapperService);
+    constructor(mapperService: MapperService, graphFormatterService: GraphFormatterService, dagreD3RendererService: DagreD3RendererService);
     /**
      * Lifecycle hook called when view of component has been fully initialized
      * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/AfterViewInit-class.html)
@@ -61,6 +67,10 @@ export declare class GraphComponent {
      * Creates the graph based on data provided
      */
     private createGraph();
+    /**
+     * Formats the graph (nodes and edges)
+     */
+    private formatGraph();
     /**
      * Displays the graph as SVG element
      * NOTE: By default, a delay of 500 ms is set before displaying graph for better user experience (loading icon does not disappear too rapidly when rendering is instant)
