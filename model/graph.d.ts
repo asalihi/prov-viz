@@ -112,6 +112,26 @@ export declare class Graph {
      * Removes all the agents and their associated edges from the provenance trail
      */
     private removeAgents();
+    private mergeActivityAndRelatedAgents(activity);
+    /**
+     * Checks if element is an agent
+     * @param elementId Identifier of element to check
+     * @param nodes Nodes to consider when searching for element
+     * @return True if element is an agent, false otherwise
+     */
+    private checkIfElementIsAgent(elementId, nodes);
+    /**
+     * Changes the label of an activity to show number of collaborators it contains
+     * @param activity Activity for which label is modified
+     * @param agents Agents linked to the activity
+     * IMPORTANT: activity is modified through the function
+     */
+    private changeLabelOfActivity(activity, agentsId);
+    /**
+     * Removes all the agents from the the graph
+     * @param agentsId Identifiers of all the agents
+     */
+    private removeAgentsFromGraph(agentsId);
     /**
      * Merges all the resources with their respective datasets
      */
@@ -122,6 +142,12 @@ export declare class Graph {
      * IMPORTANT: dataset is modified through the function and by inner functions
      */
     private mergeDatasetAndRelatedResources(dataset);
+    /**
+     * Checks if element is a resource
+     * @param elementId Identifier of element to check
+     * @return True if element is a resource, false otherwise
+     */
+    private checkIfElementIsResource(elementId, nodes);
     /**
      * Links a given dataset with all elements that are linked with resource it is linked with
      * @param dataset Dataset to be considered for linking

@@ -1,4 +1,5 @@
 export declare class DagreD3RendererService {
+    private static readonly highlightDelay;
     private data;
     private graph;
     private containerId;
@@ -10,6 +11,7 @@ export declare class DagreD3RendererService {
     private zoomOutMultiplicator;
     private render;
     private dispatch;
+    private selectedNodeId;
     /**
      * Initializes the renderer
      * @param containerElement DOM element where SVG will be attached
@@ -38,9 +40,28 @@ export declare class DagreD3RendererService {
      */
     zoomOut(delay?: number): void;
     /**
-     * Removes rendered graph if any
+     * Removes rendered graph if any and unselected node if any selected
      */
     flush(): void;
+    /**
+     * Selects a node in the graph
+     * @param nodeId Identifier of the node being selected
+     */
+    selectNode(nodeId: string): void;
+    /**
+     * Unselects the current selected node
+     */
+    unselectNode(): void;
+    /**
+     * Displays a set of nodes and associated edges with transition
+     * @param nodesId Identifier of the nodes to be displayed with transition (with their respective edges)
+     * @param duration (default is 2000) Duration of the transition
+     */
+    displayNodesAndEdgesWithTransition(nodesId: string[], duration?: number): void;
+    /**
+     * Closes context menu if any opened
+     */
+    closeContextMenu(): void;
     /**
      * Sets the options related to the renderer
      * @param containerElement DOM element where SVG will be attached
@@ -74,13 +95,15 @@ export declare class DagreD3RendererService {
      */
     private constructGraph();
     /**
-     * Sets transition for the graph (duration is 1000 ms)
-     */
-    private setGraphTransition();
-    /**
      * Sets events attached to the nodes
      */
     private setNodesEvents();
+    /**
+     * Retrieves the menu of the node
+     * @param nodeId Identifier of the node
+     * @return Menu configuration
+     */
+    private getMenuOfNode(nodeId);
     /**
      * Sets events attached to the edges
      */
@@ -97,4 +120,41 @@ export declare class DagreD3RendererService {
      * Sets the width and the height of the SVG element such that it fully expands
      */
     private setWidthAndHeight();
+    /**
+     * Changes the colors of a node
+     * @param nodeId Identifier of the node for which background color is being modified
+     * @param backgroundColor Color to use for background
+     * @param borderColor Color to use for border
+     * @param duration (default is 0) Duration of the transition
+     */
+    private changeNodeColors(nodeId, backgroundColor, borderColor, duration?);
+    /**
+     * Changes the colors of edges
+     * @param sourceId Identifier of the source of the edge
+     * @param targetId Identifier of the target of the edge
+     * @param backgroundColor Color to use for background
+     * @param borderColor Color to use for border
+     * @param duration (default is 0) Duration of the transition
+     */
+    private changeEdgesColors(sourceId, targetId, backgroundColor, borderColor, duration?);
+    /**
+     * Changes the colors of d3 elements
+     * @param d3Elements D3 selection
+     * @param backgroundColor Color to use for background
+     * @param borderColor Color to use for border
+     * @param duration (default is 0) Duration of the transition
+     */
+    private changeD3ElementsColors(d3Elements, backgroundColor, borderColor, duration?);
+    /**
+     * Displays a set of nodes with transition
+     * @param nodesId Identifier of the nodes that must be displayed with transition
+     * @param duration (default is 2000) Duration of the transition
+     */
+    private displayNodesWithTransition(nodesId, duration?);
+    /**
+     * Displays edges of a set of nodes with transition
+     * @param nodesId Identifier of the nodes for which edges must be displayed with transition
+     * @param duration (default is 2000) Duration of the transition
+     */
+    private displayEdgesOfNodesWithTransition(nodesId, duration?);
 }

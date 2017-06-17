@@ -1,21 +1,26 @@
-import { EventEmitter } from '@angular/core';
+import { ComponentFactoryResolver, EventEmitter } from '@angular/core';
 import { MapperService } from './mapper.service';
 import { GraphFormatterService } from './graph-formatter.service';
 import { DagreD3RendererService } from './dagre-d3-renderer.service';
 export declare class GraphComponent {
+    private componentFactoryResolver;
     private mapperService;
     private graphFormatterService;
     private dagreD3RendererService;
     private static readonly defaultMode;
     private static readonly simplifiedMode;
     private static readonly extendedMode;
+    private static readonly delay;
     private mode;
     private rendering;
     private error;
     private graph;
     private formattedGraph;
+    private nodeDetailComponentRef;
+    private componentFactory;
     data: Object;
     svgContainer: any;
+    nodeDetailContainer: any;
     ngGraphRendered: EventEmitter<Object>;
     ngGraphClicked: EventEmitter<Object>;
     ngNodeClicked: EventEmitter<Object>;
@@ -25,9 +30,12 @@ export declare class GraphComponent {
     ngEdgeCtrlClicked: EventEmitter<Object>;
     /**
      * Constructor of DumperComponent
-     * @param mapperService Injection of Mapper service
+     * @param componentFactoryResolver Injection of component factory resolver
+     * @param mapperService Injection of mapper service
+     * @param graphFormatterService Injection of graph formatter service
+     * @param dagreD3Renderer Injection of dagre-d3 renderer service
      */
-    constructor(mapperService: MapperService, graphFormatterService: GraphFormatterService, dagreD3RendererService: DagreD3RendererService);
+    constructor(componentFactoryResolver: ComponentFactoryResolver, mapperService: MapperService, graphFormatterService: GraphFormatterService, dagreD3RendererService: DagreD3RendererService);
     /**
      * Lifecycle hook called when view of component has been fully initialized
      * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/AfterViewInit-class.html)
@@ -38,6 +46,11 @@ export declare class GraphComponent {
      * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/OnChanges-class.html)
      */
     ngOnChanges(changes: any): void;
+    /**
+     * Lifecycle hook called when component is destroyed
+     * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/OnDestroy-class.html)
+     */
+    ngOnDestroy(): void;
     /**
      * Changes the mode for rendering graph (swtich between simplified and extended versions)
      * @param mode Selected mode for display
@@ -56,7 +69,7 @@ export declare class GraphComponent {
      */
     zoomOut(): void;
     /**
-     * Initializes the EventEmitter attached to the graph
+     * Initializes the event emitters attached to the graph
      */
     private initializeGraphEventsListeners();
     /**
@@ -76,6 +89,29 @@ export declare class GraphComponent {
      * NOTE: By default, a delay of 500 ms is set before displaying graph for better user experience (loading icon does not disappear too rapidly when rendering is instant)
      */
     private displayGraph();
+    /**
+     * Expands a given node of the graph
+     * @param event nodeId Identifier of the node to be expanded
+     */
+    private expandNode(nodeId);
+    /**
+     * Displays nodes and their associated edges with transition
+     * @param newNodesId Identifiers of the nodes (with their respective links) to be displayed with transition
+     */
+    private displayNewNodesAndConnectionsWithTransition(newNodesId);
+    /**
+     * Display information about a node
+     * @param nodeId Identifier of the node
+     */
+    private displayNodeDetails(nodeId);
+    /**
+     * Closes the view containing details of a node, if displayed
+     */
+    private closeNodeDetailView();
+    /**
+     * Closes context menu if any opened
+     */
+    private closeContextMenu();
     /**
      * Handles error
      * @param exception Exception raised during creation or rendering of the graph

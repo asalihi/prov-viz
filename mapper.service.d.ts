@@ -25,6 +25,13 @@ export declare class MapperService {
         extended: Object;
     };
     /**
+     * Retrieves the identifier of the added nodes during expand of graph
+     * @param input Data of the subgraph to be appended to the global graph
+     * @param entitiesOnly True if only new added entities must be considered, false otherwise
+     * @return List of identifiers of added nodes, null if input does not contain nodes
+     */
+    retrieveNewNodesId(input: Object, entitiesOnly: boolean): string[];
+    /**
      * Creates the Provenance graph
      */
     private createProvenanceGraph();

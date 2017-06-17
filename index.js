@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Injectable, NgModule, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Injectable, NgModule, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { cloneDeep, concat, includes, isObject, remove, toPlainObject } from 'lodash';
+import { cloneDeep, concat, filter, includes, isObject, map, remove, toPlainObject } from 'lodash';
 import * as _ from 'lodash';
 import { dispatch, event, mouse, select, selectAll, zoom, zoomIdentity } from 'd3';
 import * as d3 from 'd3';
@@ -17,38 +17,31 @@ var EXPAND_DATA = {
                 {
                     "id": "3ee4bf2a-c8d0-4f10-b3b3-46b7151b4ea0",
                     "type": "activity",
-                    "label": "<b>Generation of slice mpg141017_a1-2 for the reconstruction of rat hippocampus CA1 pyramidal cell morphology</b>",
+                    "label": "Generation of slice mpg141017_a1-2 for the reconstruction of rat hippocampus CA1 pyramidal cell morphology",
                     "metadata": {
                         "subType": "BBP Activity"
                     }
                 },
                 {
-                    "id": "bundle_parent_3ee4bf2a-c8d0-4f10-b3b3-46b7151b4ea0",
+                    "id": "1c4d3683-dcfc-489f-adbb-5de815b1b89a",
                     "type": "agent",
-                    "label": "<h5>2 CONTRIBUTORS</h5><b>Maurizio Rezzoli</b><br><b>Olivier Hagens</b>",
+                    "label": "Maurizio Rezzoli",
                     "metadata": {
-                        "members": [
-                            {
-                                "id": "1c4d3683-dcfc-489f-adbb-5de815b1b89a",
-                                "type": "agent",
-                                "metadata": {
-                                    "subType": "contributor"
-                                }
-                            },
-                            {
-                                "id": "2d16451c-6661-4b9a-aa7b-e4804386f577",
-                                "type": "agent",
-                                "metadata": {
-                                    "subType": "contributor"
-                                }
-                            }
-                        ]
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "2d16451c-6661-4b9a-aa7b-e4804386f577",
+                    "type": "agent",
+                    "label": "Olivier Hagens",
+                    "metadata": {
+                        "subType": "contributor"
                     }
                 },
                 {
                     "id": "807ded58-579d-452d-8dd2-a5568689b2bb",
                     "type": "entity",
-                    "label": "<b>Rattus norvegicus</b><br><br><h5>SUBJECT</h5>",
+                    "label": "Rattus norvegicus<br><br>Subject",
                     "metadata": {
                         "subType": "specimen"
                     }
@@ -56,7 +49,7 @@ var EXPAND_DATA = {
                 {
                     "id": "7212ff61-b2f6-461f-8f4e-ffdae735e3d4",
                     "type": "entity",
-                    "label": "<b>Brain slice<br>mpg141017_a1-2<br><br><h5>SAMPLE</h5>",
+                    "label": "Brain slice<br>mpg141017_a1-2<br><br>Sample",
                     "metadata": {
                         "subType": "sample",
                         "links": [
@@ -74,7 +67,14 @@ var EXPAND_DATA = {
             ],
             "edges": [
                 {
-                    "source": "bundle_parent_3ee4bf2a-c8d0-4f10-b3b3-46b7151b4ea0",
+                    "source": "1c4d3683-dcfc-489f-adbb-5de815b1b89a",
+                    "target": "3ee4bf2a-c8d0-4f10-b3b3-46b7151b4ea0",
+                    "metadata": {
+                        "label": "was associated to"
+                    }
+                },
+                {
+                    "source": "2d16451c-6661-4b9a-aa7b-e4804386f577",
                     "target": "3ee4bf2a-c8d0-4f10-b3b3-46b7151b4ea0",
                     "metadata": {
                         "label": "was associated to"
@@ -105,7 +105,7 @@ var EXPAND_DATA = {
                 {
                     "id": "78d02e77-98d0-430d-8516-8c712e06b002",
                     "type": "entity",
-                    "label": "<b>Single cell</b><br>mpg141017_a1-2_idC<br><br><h5>SAMPLE</h5>",
+                    "label": "Single cell<br>mpg141017_a1-2_idC<br><br>Sample",
                     "metadata": {
                         "subType": "sample"
                     }
@@ -113,38 +113,31 @@ var EXPAND_DATA = {
                 {
                     "id": "d18742a9-fce3-4e5f-a420-781c68cab24b",
                     "type": "activity",
-                    "label": "<b>Reconstruction of rat hippocampus CA1 pyramidal cell mpg141017_a1-2_idC morphology</b>",
+                    "label": "Reconstruction of rat hippocampus CA1 pyramidal cell mpg141017_a1-2_idC morphology",
                     "metadata": {
                         "subType": "BBP Activity"
                     }
                 },
                 {
-                    "id": "bundle_parent_d18742a9-fce3-4e5f-a420-781c68cab24b",
+                    "id": "03b67cb6-db1a-4acd-a628-8dd3e5f3ee12",
                     "type": "agent",
-                    "label": "<h5>2 CONTRIBUTORS</h5><b>Ying Shi</b><br><b>Caroline Violot</b>",
+                    "label": "Ying Shi",
                     "metadata": {
-                        "members": [
-                            {
-                                "id": "03b67cb6-db1a-4acd-a628-8dd3e5f3ee12",
-                                "type": "agent",
-                                "metadata": {
-                                    "subType": "contributor"
-                                }
-                            },
-                            {
-                                "id": "e58145a0-b78d-4b8a-bfda-fc4d32c7206b",
-                                "type": "agent",
-                                "metadata": {
-                                    "subType": "contributor"
-                                }
-                            }
-                        ]
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "e58145a0-b78d-4b8a-bfda-fc4d32c7206b",
+                    "type": "agent",
+                    "label": "Caroline Violot",
+                    "metadata": {
+                        "subType": "contributor"
                     }
                 },
                 {
                     "id": "6a14755f-19d7-4516-85e4-c8a01a1a3a2d",
                     "type": "entity",
-                    "label": "<b>Single cell morphology reconstruction</b><br><br><h5>DATASET</h5>",
+                    "label": "Single cell morphology reconstruction<br><br>Dataset",
                     "metadata": {
                         "subType": "dataset"
                     }
@@ -152,14 +145,14 @@ var EXPAND_DATA = {
                 {
                     "id": "f057227a-3623-45f8-99b1-4b241a800daf",
                     "type": "entity",
-                    "label": "<b>Morphology localization</b><br><br><h5>DATASET</h5>",
+                    "label": "Morphology localization<br><br>Dataset",
                     "metadata": {
                         "subType": "dataset"
                     }
                 },
                 {
                     "id": "814fd236-04d2-4b20-9b7e-5c45789f33b6",
-                    "label": "<b>mpg141017_a1-2_idC.ASC</b><br>2.74 MB<br><br><h5>FILE</h5>",
+                    "label": "mpg141017_a1-2_idC.ASC<br>2.74 MB<br><br>File",
                     "type": "entity",
                     "metadata": {
                         "subType": "resource"
@@ -168,7 +161,7 @@ var EXPAND_DATA = {
                 {
                     "id": "ab6373b4-b4be-450a-b094-02b37e9ed406",
                     "type": "entity",
-                    "label": "<b>mpg141017_a1-2_idC.jpg</b><br>494 kB<br><br><h5>FILE</h5>",
+                    "label": "mpg141017_a1-2_idC.jpg<br>494 kB<br><br>File",
                     "metadata": {
                         "subType": "resource"
                     }
@@ -183,7 +176,14 @@ var EXPAND_DATA = {
                     }
                 },
                 {
-                    "source": "bundle_parent_d18742a9-fce3-4e5f-a420-781c68cab24b",
+                    "source": "03b67cb6-db1a-4acd-a628-8dd3e5f3ee12",
+                    "target": "d18742a9-fce3-4e5f-a420-781c68cab24b",
+                    "metadata": {
+                        "label": "was associated to"
+                    }
+                },
+                {
+                    "source": "e58145a0-b78d-4b8a-bfda-fc4d32c7206b",
                     "target": "d18742a9-fce3-4e5f-a420-781c68cab24b",
                     "metadata": {
                         "label": "was associated to"
@@ -228,7 +228,7 @@ var EXPAND_DATA = {
                 {
                     "id": "1dad440b-5dc3-490e-8cbc-1f21f69bcf0f",
                     "type": "entity",
-                    "label": "<b>Single cell</b><br>mpg141017_a1-2_idA<br><br><h5>SAMPLE</h5>",
+                    "label": "Single cell<br>mpg141017_a1-2_idA<br><br>Sample",
                     "metadata": {
                         "subType": "sample"
                     }
@@ -236,38 +236,31 @@ var EXPAND_DATA = {
                 {
                     "id": "585764f2-bf67-4338-b798-a9137404dcc4",
                     "type": "activity",
-                    "label": "<b>Reconstruction of rat hippocampus CA1 pyramidal cell mpg141017_a1-2_idA morphology</b>",
+                    "label": "Reconstruction of rat hippocampus CA1 pyramidal cell mpg141017_a1-2_idA morphology",
                     "metadata": {
                         "subType": "BBP Activity"
                     }
                 },
                 {
-                    "id": "bundle_parent_585764f2-bf67-4338-b798-a9137404dcc4",
+                    "id": "03b67cb6-db1a-4acd-a628-8dd3e5f3ee12",
                     "type": "agent",
-                    "label": "<h5>2 CONTRIBUTORS</h5><b>Ying Shi</b><br><b>Caroline Violot</b>",
+                    "label": "Ying Shi",
                     "metadata": {
-                        "members": [
-                            {
-                                "id": "03b67cb6-db1a-4acd-a628-8dd3e5f3ee12",
-                                "type": "agent",
-                                "metadata": {
-                                    "subType": "contributor"
-                                }
-                            },
-                            {
-                                "id": "e58145a0-b78d-4b8a-bfda-fc4d32c7206b",
-                                "type": "agent",
-                                "metadata": {
-                                    "subType": "contributor"
-                                }
-                            }
-                        ]
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "e58145a0-b78d-4b8a-bfda-fc4d32c7206b",
+                    "type": "agent",
+                    "label": "Caroline Violot",
+                    "metadata": {
+                        "subType": "contributor"
                     }
                 },
                 {
                     "id": "f53b8016-6e30-4e17-a290-773c48775eda",
                     "type": "entity",
-                    "label": "<b>Single cell morphology reconstruction</b><br><br><h5>DATASET</h5>",
+                    "label": "Single cell morphology reconstruction<br><br>Dataset",
                     "metadata": {
                         "subType": "dataset"
                     }
@@ -275,7 +268,7 @@ var EXPAND_DATA = {
                 {
                     "id": "81a9e656-4794-4d4e-a710-81f22d477de2",
                     "type": "entity",
-                    "label": "<b>Morphology localization</b><br><br><h5>DATASET</h5>",
+                    "label": "Morphology localization<br><br>Dataset",
                     "metadata": {
                         "subType": "dataset"
                     }
@@ -283,7 +276,7 @@ var EXPAND_DATA = {
                 {
                     "id": "00f5f991-22c2-4c23-9da2-6b181a13e053",
                     "type": "entity",
-                    "label": "<b>mpg141017_a1-2_idA.ASC</b><br>1.75 MB<br><br><h5>FILE</h5>",
+                    "label": "mpg141017_a1-2_idA.ASC<br>1.75 MB<br><br>File",
                     "metadata": {
                         "subType": "resource"
                     }
@@ -291,7 +284,7 @@ var EXPAND_DATA = {
                 {
                     "id": "a20c1cea-54b1-47f7-8ce3-0f00ce8fbc73",
                     "type": "entity",
-                    "label": "<b>mpg141017_a1-2_idA.jpg</b><br>486 kB<br><br><h5>FILE</h5>",
+                    "label": "mpg141017_a1-2_idA.jpg<br>486 kB<br><br>File",
                     "metadata": {
                         "subType": "resource"
                     }
@@ -299,7 +292,14 @@ var EXPAND_DATA = {
             ],
             "edges": [
                 {
-                    "source": "bundle_parent_585764f2-bf67-4338-b798-a9137404dcc4",
+                    "source": "03b67cb6-db1a-4acd-a628-8dd3e5f3ee12",
+                    "target": "585764f2-bf67-4338-b798-a9137404dcc4",
+                    "metadata": {
+                        "label": "was associated to"
+                    }
+                },
+                {
+                    "source": "e58145a0-b78d-4b8a-bfda-fc4d32c7206b",
                     "target": "585764f2-bf67-4338-b798-a9137404dcc4",
                     "metadata": {
                         "label": "was associated to"
@@ -342,8 +342,2684 @@ var EXPAND_DATA = {
                 }
             ]
         }
+    },
+    "circuit": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "sample_1",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_1<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_reconstruction_morphology_sample_1",
+                    "type": "activity",
+                    "label": "Reconstruction of pyramidal cell morphology<br>mpg_1",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_reconstruction_morphology_sample_1",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_reconstruction_morphology_sample_1",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_3_activity_reconstruction_morphology_sample_1",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "activity_registration_electrophysiology_sample_1",
+                    "type": "activity",
+                    "label": "Registration of pyramidal cell electrophysiology<br>mpg_1",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_registration_electrophysiology_sample_1",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "morphology_reconstruction_sample_1",
+                    "type": "entity",
+                    "label": "Morphology reconstruction<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "morphology_localization_sample_1",
+                    "type": "entity",
+                    "label": "Morphology localization<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "electrophysiology_sample_1",
+                    "type": "entity",
+                    "label": "Electrophysiology<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_creation_single_neuron_model_sample_1",
+                    "type": "activity",
+                    "label": "Construction of single neuron model of sample 1",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_creation_single_neuron_model_sample_1",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "single_neuron_model_sample_1",
+                    "type": "entity",
+                    "label": "Single neuron model mpg_1<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_2",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_2<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_reconstruction_morphology_sample_2",
+                    "type": "activity",
+                    "label": "Reconstruction of pyramidal cell morphology<br>mpg_2",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_reconstruction_morphology_sample_2",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_reconstruction_morphology_sample_2",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_3_activity_reconstruction_morphology_sample_2",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "activity_registration_electrophysiology_sample_2",
+                    "type": "activity",
+                    "label": "Registration of pyramidal cell electrophysiology<br>mpg_2",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_registration_electrophysiology_sample_2",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "morphology_reconstruction_sample_2",
+                    "type": "entity",
+                    "label": "Morphology reconstruction<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "morphology_localization_sample_2",
+                    "type": "entity",
+                    "label": "Morphology localization<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "electrophysiology_sample_2",
+                    "type": "entity",
+                    "label": "Electrophysiology<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_creation_single_neuron_model_sample_2",
+                    "type": "activity",
+                    "label": "Construction of single neuron model of sample 2",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_creation_single_neuron_model_sample_2",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "single_neuron_model_sample_2",
+                    "type": "entity",
+                    "label": "Single neuron model mpg_2<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_3",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_3<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_reconstruction_morphology_sample_3",
+                    "type": "activity",
+                    "label": "Reconstruction of pyramidal cell morphology<br>mpg_3",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_reconstruction_morphology_sample_3",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_reconstruction_morphology_sample_3",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_3_activity_reconstruction_morphology_sample_3",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "activity_registration_electrophysiology_sample_3",
+                    "type": "activity",
+                    "label": "Registration of pyramidal cell electrophysiology<br>mpg_3",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_registration_electrophysiology_sample_3",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "morphology_reconstruction_sample_3",
+                    "type": "entity",
+                    "label": "Morphology reconstruction<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "morphology_localization_sample_3",
+                    "type": "entity",
+                    "label": "Morphology localization<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "electrophysiology_sample_3",
+                    "type": "entity",
+                    "label": "Electrophysiology<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_creation_single_neuron_model_sample_3",
+                    "type": "activity",
+                    "label": "Construction of single neuron model of sample 3",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_creation_single_neuron_model_sample_3",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "single_neuron_model_sample_3",
+                    "type": "entity",
+                    "label": "Single neuron model mpg_3<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_4",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_4<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_reconstruction_morphology_sample_4",
+                    "type": "activity",
+                    "label": "Reconstruction of pyramidal cell morphology<br>mpg_4",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_reconstruction_morphology_sample_4",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_reconstruction_morphology_sample_4",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_3_activity_reconstruction_morphology_sample_4",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "activity_registration_electrophysiology_sample_4",
+                    "type": "activity",
+                    "label": "Registration of pyramidal cell electrophysiology<br>mpg_4",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_registration_electrophysiology_sample_4",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "morphology_reconstruction_sample_4",
+                    "type": "entity",
+                    "label": "Morphology reconstruction<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "morphology_localization_sample_4",
+                    "type": "entity",
+                    "label": "Morphology localization<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "electrophysiology_sample_4",
+                    "type": "entity",
+                    "label": "Electrophysiology<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_creation_single_neuron_model_sample_4",
+                    "type": "activity",
+                    "label": "Construction of single neuron model of sample 4",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_creation_single_neuron_model_sample_4",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "single_neuron_model_sample_4",
+                    "type": "entity",
+                    "label": "Single neuron model mpg_4<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_5",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_5<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_reconstruction_morphology_sample_5",
+                    "type": "activity",
+                    "label": "Reconstruction of pyramidal cell morphology<br>mpg_5",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_reconstruction_morphology_sample_5",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_reconstruction_morphology_sample_5",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_3_activity_reconstruction_morphology_sample_5",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "activity_registration_electrophysiology_sample_5",
+                    "type": "activity",
+                    "label": "Registration of pyramidal cell electrophysiology<br>mpg_5",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_registration_electrophysiology_sample_5",
+                    "type": "agent",
+                    "label": "A software",
+                    "metadata": {
+                        "subType": "software"
+                    }
+                },
+                {
+                    "id": "morphology_reconstruction_sample_5",
+                    "type": "entity",
+                    "label": "Morphology reconstruction<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "morphology_localization_sample_5",
+                    "type": "entity",
+                    "label": "Morphology localization<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "electrophysiology_sample_5",
+                    "type": "entity",
+                    "label": "Electrophysiology<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_creation_single_neuron_model_sample_5",
+                    "type": "activity",
+                    "label": "Construction of single neuron model of sample 5",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_creation_single_neuron_model_sample_5",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "single_neuron_model_sample_5",
+                    "type": "entity",
+                    "label": "Single neuron model mpg_5<br><br>Dataset",
+                    "metadata": {
+                        "subType": "dataset",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "circuit",
+                    "type": "entity",
+                    "label": "Circuit",
+                    "metadata": {
+                        "subType": "circuit",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_generation_circuit",
+                    "type": "activity",
+                    "label": "Generation of circuit",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_generation_circuit",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "activity_reconstruction_morphology_sample_1",
+                    "target": "sample_1"
+                },
+                {
+                    "source": "agent_1_activity_reconstruction_morphology_sample_1",
+                    "target": "activity_reconstruction_morphology_sample_1"
+                },
+                {
+                    "source": "agent_2_activity_reconstruction_morphology_sample_1",
+                    "target": "activity_reconstruction_morphology_sample_1"
+                },
+                {
+                    "source": "agent_3_activity_reconstruction_morphology_sample_1",
+                    "target": "activity_reconstruction_morphology_sample_1"
+                },
+                {
+                    "source": "activity_registration_electrophysiology_sample_1",
+                    "target": "sample_1"
+                },
+                {
+                    "source": "agent_1_activity_registration_electrophysiology_sample_1",
+                    "target": "activity_registration_electrophysiology_sample_1"
+                },
+                {
+                    "source": "morphology_reconstruction_sample_1",
+                    "target": "activity_reconstruction_morphology_sample_1"
+                },
+                {
+                    "source": "morphology_localization_sample_1",
+                    "target": "activity_reconstruction_morphology_sample_1"
+                },
+                {
+                    "source": "electrophysiology_sample_1",
+                    "target": "activity_registration_electrophysiology_sample_1"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_1",
+                    "target": "morphology_reconstruction_sample_1"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_1",
+                    "target": "morphology_localization_sample_1"
+                },
+                {
+                    "source": "agent_1_activity_creation_single_neuron_model_sample_1",
+                    "target": "activity_creation_single_neuron_model_sample_1"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_1",
+                    "target": "electrophysiology_sample_1"
+                },
+                {
+                    "source": "single_neuron_model_sample_1",
+                    "target": "activity_creation_single_neuron_model_sample_1"
+                },
+                {
+                    "source": "activity_generation_circuit",
+                    "target": "single_neuron_model_sample_1"
+                },
+                {
+                    "source": "activity_reconstruction_morphology_sample_2",
+                    "target": "sample_2"
+                },
+                {
+                    "source": "agent_1_activity_reconstruction_morphology_sample_2",
+                    "target": "activity_reconstruction_morphology_sample_2"
+                },
+                {
+                    "source": "agent_2_activity_reconstruction_morphology_sample_2",
+                    "target": "activity_reconstruction_morphology_sample_2"
+                },
+                {
+                    "source": "agent_3_activity_reconstruction_morphology_sample_2",
+                    "target": "activity_reconstruction_morphology_sample_2"
+                },
+                {
+                    "source": "activity_registration_electrophysiology_sample_2",
+                    "target": "sample_2"
+                },
+                {
+                    "source": "agent_1_activity_registration_electrophysiology_sample_2",
+                    "target": "activity_registration_electrophysiology_sample_2"
+                },
+                {
+                    "source": "morphology_reconstruction_sample_2",
+                    "target": "activity_reconstruction_morphology_sample_2"
+                },
+                {
+                    "source": "morphology_localization_sample_2",
+                    "target": "activity_reconstruction_morphology_sample_2"
+                },
+                {
+                    "source": "electrophysiology_sample_2",
+                    "target": "activity_registration_electrophysiology_sample_2"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_2",
+                    "target": "morphology_reconstruction_sample_2"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_2",
+                    "target": "morphology_localization_sample_2"
+                },
+                {
+                    "source": "agent_1_activity_creation_single_neuron_model_sample_2",
+                    "target": "activity_creation_single_neuron_model_sample_2"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_2",
+                    "target": "electrophysiology_sample_2"
+                },
+                {
+                    "source": "single_neuron_model_sample_2",
+                    "target": "activity_creation_single_neuron_model_sample_2"
+                },
+                {
+                    "source": "activity_generation_circuit",
+                    "target": "single_neuron_model_sample_2"
+                },
+                {
+                    "source": "activity_reconstruction_morphology_sample_3",
+                    "target": "sample_3"
+                },
+                {
+                    "source": "agent_1_activity_reconstruction_morphology_sample_3",
+                    "target": "activity_reconstruction_morphology_sample_3"
+                },
+                {
+                    "source": "agent_2_activity_reconstruction_morphology_sample_3",
+                    "target": "activity_reconstruction_morphology_sample_3"
+                },
+                {
+                    "source": "agent_3_activity_reconstruction_morphology_sample_3",
+                    "target": "activity_reconstruction_morphology_sample_3"
+                },
+                {
+                    "source": "activity_registration_electrophysiology_sample_3",
+                    "target": "sample_3"
+                },
+                {
+                    "source": "agent_1_activity_registration_electrophysiology_sample_3",
+                    "target": "activity_registration_electrophysiology_sample_3"
+                },
+                {
+                    "source": "morphology_reconstruction_sample_3",
+                    "target": "activity_reconstruction_morphology_sample_3"
+                },
+                {
+                    "source": "morphology_localization_sample_3",
+                    "target": "activity_reconstruction_morphology_sample_3"
+                },
+                {
+                    "source": "electrophysiology_sample_3",
+                    "target": "activity_registration_electrophysiology_sample_3"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_3",
+                    "target": "morphology_reconstruction_sample_3"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_3",
+                    "target": "morphology_localization_sample_3"
+                },
+                {
+                    "source": "agent_1_activity_creation_single_neuron_model_sample_3",
+                    "target": "activity_creation_single_neuron_model_sample_3"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_3",
+                    "target": "electrophysiology_sample_3"
+                },
+                {
+                    "source": "single_neuron_model_sample_3",
+                    "target": "activity_creation_single_neuron_model_sample_3"
+                },
+                {
+                    "source": "activity_generation_circuit",
+                    "target": "single_neuron_model_sample_3"
+                },
+                {
+                    "source": "activity_reconstruction_morphology_sample_4",
+                    "target": "sample_4"
+                },
+                {
+                    "source": "agent_1_activity_reconstruction_morphology_sample_4",
+                    "target": "activity_reconstruction_morphology_sample_4"
+                },
+                {
+                    "source": "agent_2_activity_reconstruction_morphology_sample_4",
+                    "target": "activity_reconstruction_morphology_sample_4"
+                },
+                {
+                    "source": "agent_3_activity_reconstruction_morphology_sample_4",
+                    "target": "activity_reconstruction_morphology_sample_4"
+                },
+                {
+                    "source": "activity_registration_electrophysiology_sample_4",
+                    "target": "sample_4"
+                },
+                {
+                    "source": "agent_1_activity_registration_electrophysiology_sample_4",
+                    "target": "activity_registration_electrophysiology_sample_4"
+                },
+                {
+                    "source": "morphology_reconstruction_sample_4",
+                    "target": "activity_reconstruction_morphology_sample_4"
+                },
+                {
+                    "source": "morphology_localization_sample_4",
+                    "target": "activity_reconstruction_morphology_sample_4"
+                },
+                {
+                    "source": "electrophysiology_sample_4",
+                    "target": "activity_registration_electrophysiology_sample_4"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_4",
+                    "target": "morphology_reconstruction_sample_4"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_4",
+                    "target": "morphology_localization_sample_4"
+                },
+                {
+                    "source": "agent_1_activity_creation_single_neuron_model_sample_4",
+                    "target": "activity_creation_single_neuron_model_sample_4"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_4",
+                    "target": "electrophysiology_sample_4"
+                },
+                {
+                    "source": "single_neuron_model_sample_4",
+                    "target": "activity_creation_single_neuron_model_sample_4"
+                },
+                {
+                    "source": "activity_generation_circuit",
+                    "target": "single_neuron_model_sample_4"
+                },
+                {
+                    "source": "activity_reconstruction_morphology_sample_5",
+                    "target": "sample_5"
+                },
+                {
+                    "source": "agent_1_activity_reconstruction_morphology_sample_5",
+                    "target": "activity_reconstruction_morphology_sample_5"
+                },
+                {
+                    "source": "agent_2_activity_reconstruction_morphology_sample_5",
+                    "target": "activity_reconstruction_morphology_sample_5"
+                },
+                {
+                    "source": "agent_3_activity_reconstruction_morphology_sample_5",
+                    "target": "activity_reconstruction_morphology_sample_5"
+                },
+                {
+                    "source": "activity_registration_electrophysiology_sample_5",
+                    "target": "sample_5"
+                },
+                {
+                    "source": "agent_1_activity_registration_electrophysiology_sample_5",
+                    "target": "activity_registration_electrophysiology_sample_5"
+                },
+                {
+                    "source": "morphology_reconstruction_sample_5",
+                    "target": "activity_reconstruction_morphology_sample_5"
+                },
+                {
+                    "source": "morphology_localization_sample_5",
+                    "target": "activity_reconstruction_morphology_sample_5"
+                },
+                {
+                    "source": "electrophysiology_sample_5",
+                    "target": "activity_registration_electrophysiology_sample_5"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_5",
+                    "target": "morphology_reconstruction_sample_5"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_5",
+                    "target": "morphology_localization_sample_5"
+                },
+                {
+                    "source": "agent_1_activity_creation_single_neuron_model_sample_5",
+                    "target": "activity_creation_single_neuron_model_sample_5"
+                },
+                {
+                    "source": "activity_creation_single_neuron_model_sample_5",
+                    "target": "electrophysiology_sample_5"
+                },
+                {
+                    "source": "single_neuron_model_sample_5",
+                    "target": "activity_creation_single_neuron_model_sample_5"
+                },
+                {
+                    "source": "activity_generation_circuit",
+                    "target": "single_neuron_model_sample_5"
+                },
+                {
+                    "source": "circuit",
+                    "target": "activity_generation_circuit"
+                },
+                {
+                    "source": "agent_1_activity_generation_circuit",
+                    "target": "activity_generation_circuit"
+                }
+            ]
+        }
+    },
+    "sample_1": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "sample_1",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_1<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_2",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_2<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_3",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_3<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_4",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_4<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_5",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_5<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_preparation_brain_slice",
+                    "type": "activity",
+                    "label": "Preparation of the brain slice<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "sample_1",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_2",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_3",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_4",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_5",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "activity_preparation_brain_slice",
+                    "target": "brain_slice"
+                },
+                {
+                    "source": "agent_1_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "agent_2_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                }
+            ]
+        }
+    },
+    "sample_2": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "sample_1",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_1<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_2",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_2<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_3",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_3<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_4",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_4<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_5",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_5<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_preparation_brain_slice",
+                    "type": "activity",
+                    "label": "Preparation of the brain slice<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "sample_1",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_2",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_3",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_4",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_5",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "activity_preparation_brain_slice",
+                    "target": "brain_slice"
+                },
+                {
+                    "source": "agent_1_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "agent_2_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                }
+            ]
+        }
+    },
+    "sample_3": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "sample_1",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_1<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_2",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_2<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_3",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_3<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_4",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_4<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_5",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_5<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_preparation_brain_slice",
+                    "type": "activity",
+                    "label": "Preparation of the brain slice<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "sample_1",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_2",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_3",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_4",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_5",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "activity_preparation_brain_slice",
+                    "target": "brain_slice"
+                },
+                {
+                    "source": "agent_1_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "agent_2_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                }
+            ]
+        }
+    },
+    "sample_4": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "sample_1",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_1<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_2",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_2<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_3",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_3<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_4",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_4<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_5",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_5<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_preparation_brain_slice",
+                    "type": "activity",
+                    "label": "Preparation of the brain slice<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "sample_1",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_2",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_3",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_4",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_5",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "activity_preparation_brain_slice",
+                    "target": "brain_slice"
+                },
+                {
+                    "source": "agent_1_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "agent_2_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                }
+            ]
+        }
+    },
+    "sample_5": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "sample_1",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_1<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_2",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_2<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_3",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_3<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_4",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_4<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "sample_5",
+                    "type": "entity",
+                    "label": "Single cell<br>mpg_5<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_preparation_brain_slice",
+                    "type": "activity",
+                    "label": "Preparation of the brain slice<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_preparation_brain_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "sample_1",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_2",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_3",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_4",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "sample_5",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "activity_preparation_brain_slice",
+                    "target": "brain_slice"
+                },
+                {
+                    "source": "agent_1_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                },
+                {
+                    "source": "agent_2_activity_preparation_brain_slice",
+                    "target": "activity_preparation_brain_slice"
+                }
+            ]
+        }
+    },
+    "brain_slice": {
+        "graph": {
+            "type": "Provenance",
+            "directed": true,
+            "nodes": [
+                {
+                    "id": "activity_generation_slice",
+                    "type": "activity",
+                    "label": "Generation of slice mpg141017<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_generation_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_generation_slice",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "specimen",
+                    "type": "entity",
+                    "label": "Rattus norvegicus<br><br>Subject",
+                    "metadata": {
+                        "subType": "specimen",
+                        "links": [
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_generation_slice",
+                    "type": "activity",
+                    "label": "Generation of slice mpg141017<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_generation_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_generation_slice",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "specimen",
+                    "type": "entity",
+                    "label": "Rattus norvegicus<br><br>Subject",
+                    "metadata": {
+                        "subType": "specimen",
+                        "links": [
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_generation_slice",
+                    "type": "activity",
+                    "label": "Generation of slice mpg141017<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_generation_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_generation_slice",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "specimen",
+                    "type": "entity",
+                    "label": "Rattus norvegicus<br><br>Subject",
+                    "metadata": {
+                        "subType": "specimen",
+                        "links": [
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_generation_slice",
+                    "type": "activity",
+                    "label": "Generation of slice mpg141017<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_generation_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_generation_slice",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "specimen",
+                    "type": "entity",
+                    "label": "Rattus norvegicus<br><br>Subject",
+                    "metadata": {
+                        "subType": "specimen",
+                        "links": [
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "activity_generation_slice",
+                    "type": "activity",
+                    "label": "Generation of slice mpg141017<br>for reconstruction of morphology and registration of electrophysiology<br>of rat hippocampus CA1 pyramidal cell",
+                    "metadata": {
+                        "subType": "BBP Activity"
+                    }
+                },
+                {
+                    "id": "agent_1_activity_generation_slice",
+                    "type": "agent",
+                    "label": "First contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "agent_2_activity_generation_slice",
+                    "type": "agent",
+                    "label": "Second contributor",
+                    "metadata": {
+                        "subType": "contributor"
+                    }
+                },
+                {
+                    "id": "specimen",
+                    "type": "entity",
+                    "label": "Rattus norvegicus<br><br>Subject",
+                    "metadata": {
+                        "subType": "specimen",
+                        "links": [
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "brain_slice",
+                    "type": "entity",
+                    "label": "Brain slice<br>mpg141017<br><br>Sample",
+                    "metadata": {
+                        "subType": "sample",
+                        "links": [
+                            {
+                                "rel": "up",
+                                "href": "<HTTP>"
+                            },
+                            {
+                                "rel": "down",
+                                "href": "<HTTP>"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "source": "activity_generation_slice",
+                    "target": "specimen"
+                },
+                {
+                    "source": "agent_1_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "agent_2_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "brain_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "activity_generation_slice",
+                    "target": "specimen"
+                },
+                {
+                    "source": "agent_1_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "agent_2_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "brain_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "activity_generation_slice",
+                    "target": "specimen"
+                },
+                {
+                    "source": "agent_1_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "agent_2_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "brain_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "activity_generation_slice",
+                    "target": "specimen"
+                },
+                {
+                    "source": "agent_1_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "agent_2_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "brain_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "activity_generation_slice",
+                    "target": "specimen"
+                },
+                {
+                    "source": "agent_1_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "agent_2_activity_generation_slice",
+                    "target": "activity_generation_slice"
+                },
+                {
+                    "source": "brain_slice",
+                    "target": "activity_generation_slice"
+                }
+            ]
+        }
     }
 };
+
+var DETAILS = {
+    "7212ff61-b2f6-461f-8f4e-ffdae735e3d4": {
+        "title": "Sample",
+        "content": "<span><b>Type</b></span>\n      <br>\n      <span>Brain slice</span>\n      <br><br>\n      <span><b>Name</b></span>\n      <br>\n      <span>mpg141017_a1-2</span>"
+    },
+    "a26a766d-0906-4999-9650-7f66584ee6a5": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n      <br>\n      <span>Preparation of the brain slice for the reconstruction of rat hippocampus CA1 pyramidal cell morphology</span>\n      <br><br>\n      <span><b>Protocol</b></span>\n      <br>\n      <span>Cells in the slices were visualized using infrared differential interference contrast video microscopy (VX55 camera, Till Photonics, Germany and BX51WI microscope, Olympus, Japan). Recordings were performed at 32 +/- 1°C in standard ACSF with an Axon Multiclamp 700B Amplifier (Molecular Devices, USA) using 2 – 10 MOhm borosilicate pipettes, containing (in mM): K+-gluconate 110.00, KCl 10.00, ATP-Mg2+ 4.00, Na2-phosphocreatine 10.00, GTP-Na+ 0.30, HEPES 10.00, biocytin 3.00 mg/ml; pH 7.30, 300 mOsm.</span>\n      <br><br>\n      <span><b>2 contributors</b></span>\n      <br>\n      <ul>\n      <li>Maurizio Rezzoli</li>\n      <li>Olivier Hagens</li>\n      </ul>"
+    },
+    "specimen": {
+        "title": "Subject",
+        "content": "<span><b>Species</b></span>\n      <br>\n      <span>Rattus novergicus</span>\n      <br><br>\n      <span><b>Age</b></span>\n      <br>\n      <span>18 days (Post-natal)</span>\n      <br><br>\n      <span><b>Sex</b></span>\n      <br>\n      <span>Male</span>\n      <br><br>\n      <span><b>Strain</b></span>\n      <br>\n      <span>Wistar</span>"
+    },
+    "brain_slice": {
+        "title": "Sample",
+        "content": "<span><b>Name</b></span>\n      <br>\n      <span>mpg141017</span>\n      <br><br>\n      <span><b>Brain region</b></span>\n      <br>\n      <span>Field CA1, stratum pyramidale<br>(BBP_WHS_SD:0000119)</span>\n      <br><br>\n      <span><b>Scale</b></span>\n      <br>\n      <span>Brain slice<br>(BBP_SCL:0000004)</span>"
+    },
+    "activity_generation_slice": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n      <br>\n      <span>Generation of slice mpg141017_a1-2 for the reconstruction of rat hippocampus CA1 pyramidal cell morphology</span>\n      <br><br>\n      <span><b>Type</b></span>\n      <br>\n      <span>Experiment<br>(BBP_ACT:0000006)</span>\n      <br><br>\n      <span><b>Protocol</b></span>\n      <br>\n      <span>The rat brain was quickly dissected and sliced into 300 µm-thick coronal slices (HR2 vibratome, Sigmann Elektronik, Germany) in ice-cold artificial cerebrospinal fluid (ACSF) (in mM: NaCl 124.0, KCl 2.50, MgCl2 10.0, NaH2PO4 1.25, CaCl2 0.50, D-(+)-Glucose 25.00, NaHC03 25.00; pH 7.3, s.d. 0.1, aerated with 95% O2 / 5%CO2), followed by a 15 minute incubation at 34°C in standard ACSF (in mM: NaCl 124.0, KCl 2.50, MgCl2 1.00, NaH2PO4 1.25, CaCl2 2.00, D-(+)-Glucose 25.00, NaHC03 25.00; pH 7.40, aerated with 95% O2 / 5%CO2).</span>\n      <br><br>\n      <span><b>2 contributors</b></span>\n      <br>\n      <ul>\n        <li>Maurizio Pezzoli (Researcher)</li>\n        <li>Olivier Hagens (Researcher)</li>\n      </ul>"
+    },
+    "activity_preparation_brain_slice": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n      <br>\n      <span>Preparation of the brain slice for the reconstruction of rat hippocampus CA1 pyramidal cell morphology</span>\n      <br><br>\n      <span><b>Type</b></span>\n      <br>\n      <span>Experiment<br>(BBP_ACT:0000006)</span>\n      <br><br>\n      <span><b>Protocol</b></span>\n      <br>\n      <span>Cells in the slices were visualized using infrared differential interference contrast video microscopy (VX55 camera, Till Photonics, Germany and BX51WI microscope, Olympus, Japan). Recordings were performed at 32 +/- 1°C in standard ACSF with an Axon Multiclamp 700B Amplifier (Molecular Devices, USA) using 2 – 10 MOhm borosilicate pipettes, containing (in mM): K+-gluconate 110.00, KCl 10.00, ATP-Mg2+ 4.00, Na2-phosphocreatine 10.00, GTP-Na+ 0.30, HEPES 10.00, biocytin 3.00 mg/ml; pH 7.30, 300 mOsm.</span>\n      <br><br>\n      <span><b>2 contributors</b></span>\n      <br>\n      <ul>\n        <li>Maurizio Pezzoli (Researcher)</li>\n        <li>Olivier Hagens (Researcher)</li>\n      </ul>"
+    },
+    "sample_1": {
+        "title": "Sample",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>mpg_1</span>\n    <br><br>\n    <span><b>Brain region</b></span>\n    <br>\n    <span>Field CA1, stratum pyramidale<br>(BBP_WHS_SD:0000119)</span>\n    <br><br>\n    <span><b>Scale</b></span>\n    <br>\n    <span>Single cell<br>(BBP_SCL:0000006)</span>"
+    },
+    "morphology_reconstruction_sample_1": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_1 morphology</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>Neurolucida ASCII file containing the morphology reconstruction</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Single cell morphology reconstruction<br>(BBP_DAMO:0000019)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_1.asc (2.74 MB) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "morphology_localization_sample_1": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_1 morphology localization</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>File containing the image of the localization of the morphology reconstruction in the brain slice</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Morphology localization<br>(BBP_DAMO:0000067)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_1.jpg (494 Kb) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "electrophysiology_sample_1": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Electrophysiology of pyramidal cell mpg_1</span>"
+    },
+    "activity_reconstruction_morphology_sample_1": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Reconstruction of rat hippocampus CA1 pyramidal cell mpg_1 morphology</span>\n    <br><br>\n    <span><b>Type</b></span>\n    <br>\n    <span>Experiment<br>(BBP_ACT:0000006)</span>\n    <br><br>\n    <span><b>Protocol</b></span>\n    <br>\n    <span>The filled-in biocytin was revealed with 3,3′-diaminobenzidine (DAB), after o/n fixation of the slice in 2% PFA + 0.3% picric acid + 1% glutaraldehyde. Next, the cell was reconstructed in 3D under an Olympus BX51W microscope with an oil-immersion 100X (NA 1.35) objective using Neurolucida software (MicroBrightField, Magdeburg, Germany).</span>\n    <br><br>\n    <span><b>2 contributors</b></span>\n    <br>\n    <ul>\n      <li>Ying Shi (Researcher)</li>\n      <li>Caroline Violot (Researcher)</li>\n    </ul>"
+    },
+    "activity_registration_electrophysiology_sample_1": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Registration of pyramidal cell electrophysiology mpg_1</span>"
+    },
+    "single_neuron_model_sample_1": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Single neuron model of pyramidal cell mpg_1</span>"
+    },
+    "activity_creation_single_neuron_model_sample_1": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Creation of single neuron model of sample 1</span>"
+    },
+    "sample_2": {
+        "title": "Sample",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>mpg_2</span>\n    <br><br>\n    <span><b>Brain region</b></span>\n    <br>\n    <span>Field CA1, stratum pyramidale<br>(BBP_WHS_SD:0000119)</span>\n    <br><br>\n    <span><b>Scale</b></span>\n    <br>\n    <span>Single cell<br>(BBP_SCL:0000006)</span>"
+    },
+    "morphology_reconstruction_sample_2": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_2 morphology</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>Neurolucida ASCII file containing the morphology reconstruction</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Single cell morphology reconstruction<br>(BBP_DAMO:0000019)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_2.asc (2.74 MB) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "morphology_localization_sample_2": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_2 morphology localization</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>File containing the image of the localization of the morphology reconstruction in the brain slice</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Morphology localization<br>(BBP_DAMO:0000067)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_2.jpg (494 Kb) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "electrophysiology_sample_2": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Electrophysiology of pyramidal cell mpg_2</span>"
+    },
+    "activity_reconstruction_morphology_sample_2": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Reconstruction of rat hippocampus CA1 pyramidal cell mpg_2 morphology</span>\n    <br><br>\n    <span><b>Type</b></span>\n    <br>\n    <span>Experiment<br>(BBP_ACT:0000006)</span>\n    <br><br>\n    <span><b>Protocol</b></span>\n    <br>\n    <span>The filled-in biocytin was revealed with 3,3′-diaminobenzidine (DAB), after o/n fixation of the slice in 2% PFA + 0.3% picric acid + 1% glutaraldehyde. Next, the cell was reconstructed in 3D under an Olympus BX51W microscope with an oil-immersion 100X (NA 1.35) objective using Neurolucida software (MicroBrightField, Magdeburg, Germany).</span>\n    <br><br>\n    <span><b>2 contributors</b></span>\n    <br>\n    <ul>\n      <li>Ying Shi (Researcher)</li>\n      <li>Caroline Violot (Researcher)</li>\n    </ul>"
+    },
+    "activity_registration_electrophysiology_sample_2": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Registration of pyramidal cell electrophysiology mpg_2</span>"
+    },
+    "single_neuron_model_sample_2": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Single neuron model of pyramidal cell mpg_2</span>"
+    },
+    "activity_creation_single_neuron_model_sample_2": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Creation of single neuron model of sample 2</span>"
+    },
+    "sample_3": {
+        "title": "Sample",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>mpg_3</span>\n    <br><br>\n    <span><b>Brain region</b></span>\n    <br>\n    <span>Field CA1, stratum pyramidale<br>(BBP_WHS_SD:0000119)</span>\n    <br><br>\n    <span><b>Scale</b></span>\n    <br>\n    <span>Single cell<br>(BBP_SCL:0000006)</span>"
+    },
+    "morphology_reconstruction_sample_3": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_3 morphology</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>Neurolucida ASCII file containing the morphology reconstruction</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Single cell morphology reconstruction<br>(BBP_DAMO:0000019)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_3.asc (2.74 MB) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "morphology_localization_sample_3": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_3 morphology localization</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>File containing the image of the localization of the morphology reconstruction in the brain slice</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Morphology localization<br>(BBP_DAMO:0000067)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_3.jpg (494 Kb) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "electrophysiology_sample_3": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Electrophysiology of pyramidal cell mpg_3</span>"
+    },
+    "activity_reconstruction_morphology_sample_3": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Reconstruction of rat hippocampus CA1 pyramidal cell mpg_3 morphology</span>\n    <br><br>\n    <span><b>Type</b></span>\n    <br>\n    <span>Experiment<br>(BBP_ACT:0000006)</span>\n    <br><br>\n    <span><b>Protocol</b></span>\n    <br>\n    <span>The filled-in biocytin was revealed with 3,3′-diaminobenzidine (DAB), after o/n fixation of the slice in 2% PFA + 0.3% picric acid + 1% glutaraldehyde. Next, the cell was reconstructed in 3D under an Olympus BX51W microscope with an oil-immersion 100X (NA 1.35) objective using Neurolucida software (MicroBrightField, Magdeburg, Germany).</span>\n    <br><br>\n    <span><b>2 contributors</b></span>\n    <br>\n    <ul>\n      <li>Ying Shi (Researcher)</li>\n      <li>Caroline Violot (Researcher)</li>\n    </ul>"
+    },
+    "activity_registration_electrophysiology_sample_3": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Registration of pyramidal cell electrophysiology mpg_3</span>"
+    },
+    "single_neuron_model_sample_3": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Single neuron model of pyramidal cell mpg_3</span>"
+    },
+    "activity_creation_single_neuron_model_sample_3": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Creation of single neuron model of sample 3</span>"
+    },
+    "sample_4": {
+        "title": "Sample",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>mpg_4</span>\n    <br><br>\n    <span><b>Brain region</b></span>\n    <br>\n    <span>Field CA1, stratum pyramidale<br>(BBP_WHS_SD:0000119)</span>\n    <br><br>\n    <span><b>Scale</b></span>\n    <br>\n    <span>Single cell<br>(BBP_SCL:0000006)</span>"
+    },
+    "morphology_reconstruction_sample_4": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_4 morphology</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>Neurolucida ASCII file containing the morphology reconstruction</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Single cell morphology reconstruction<br>(BBP_DAMO:0000019)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_4.asc (2.74 MB) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "morphology_localization_sample_4": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_4 morphology localization</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>File containing the image of the localization of the morphology reconstruction in the brain slice</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Morphology localization<br>(BBP_DAMO:0000067)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_4.jpg (494 Kb) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "electrophysiology_sample_4": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Electrophysiology of pyramidal cell mpg_4</span>"
+    },
+    "activity_reconstruction_morphology_sample_4": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Reconstruction of rat hippocampus CA1 pyramidal cell mpg_4 morphology</span>\n    <br><br>\n    <span><b>Type</b></span>\n    <br>\n    <span>Experiment<br>(BBP_ACT:0000006)</span>\n    <br><br>\n    <span><b>Protocol</b></span>\n    <br>\n    <span>The filled-in biocytin was revealed with 3,3′-diaminobenzidine (DAB), after o/n fixation of the slice in 2% PFA + 0.3% picric acid + 1% glutaraldehyde. Next, the cell was reconstructed in 3D under an Olympus BX51W microscope with an oil-immersion 100X (NA 1.35) objective using Neurolucida software (MicroBrightField, Magdeburg, Germany).</span>\n    <br><br>\n    <span><b>2 contributors</b></span>\n    <br>\n    <ul>\n      <li>Ying Shi (Researcher)</li>\n      <li>Caroline Violot (Researcher)</li>\n    </ul>"
+    },
+    "activity_registration_electrophysiology_sample_4": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Registration of pyramidal cell electrophysiology mpg_4</span>"
+    },
+    "single_neuron_model_sample_4": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Single neuron model of pyramidal cell mpg_4</span>"
+    },
+    "activity_creation_single_neuron_model_sample_4": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Creation of single neuron model of sample 4</span>"
+    },
+    "sample_5": {
+        "title": "Sample",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>mpg_5</span>\n    <br><br>\n    <span><b>Brain region</b></span>\n    <br>\n    <span>Field CA1, stratum pyramidale<br>(BBP_WHS_SD:0000119)</span>\n    <br><br>\n    <span><b>Scale</b></span>\n    <br>\n    <span>Single cell<br>(BBP_SCL:0000006)</span>"
+    },
+    "morphology_reconstruction_sample_5": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_5 morphology</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>Neurolucida ASCII file containing the morphology reconstruction</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Single cell morphology reconstruction<br>(BBP_DAMO:0000019)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_5.asc (2.74 MB) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "morphology_localization_sample_5": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Rat hippocampus CA1 pyramidal cell mpg_5 morphology localization</span>\n    <br><br>\n    <span><b>Description</b></span>\n    <br>\n    <span>File containing the image of the localization of the morphology reconstruction in the brain slice</span>\n    <br><br>\n    <span><b>Categories</b></span>\n    <br>\n    <ul>\n      <li>Morphology localization<br>(BBP_DAMO:0000067)</li>\n    </ul>\n    <span><b>License</b></span>\n    <br>\n    <span>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International<br>(BBP_LICENSE:0000002)</span>\n    <br><br>\n    <span><b>1 resource</b></span>\n    <br>\n    <ul>\n      <li>mpg_5.jpg (494 Kb) <i class=\"fa fa-download\" aria-hidden=\"true\"></i></li>\n    </ul>"
+    },
+    "electrophysiology_sample_5": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Electrophysiology of pyramidal cell mpg_5</span>"
+    },
+    "activity_reconstruction_morphology_sample_5": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Reconstruction of rat hippocampus CA1 pyramidal cell mpg_5 morphology</span>\n    <br><br>\n    <span><b>Type</b></span>\n    <br>\n    <span>Experiment<br>(BBP_ACT:0000006)</span>\n    <br><br>\n    <span><b>Protocol</b></span>\n    <br>\n    <span>The filled-in biocytin was revealed with 3,3′-diaminobenzidine (DAB), after o/n fixation of the slice in 2% PFA + 0.3% picric acid + 1% glutaraldehyde. Next, the cell was reconstructed in 3D under an Olympus BX51W microscope with an oil-immersion 100X (NA 1.35) objective using Neurolucida software (MicroBrightField, Magdeburg, Germany).</span>\n    <br><br>\n    <span><b>2 contributors</b></span>\n    <br>\n    <ul>\n      <li>Ying Shi (Researcher)</li>\n      <li>Caroline Violot (Researcher)</li>\n    </ul>"
+    },
+    "activity_registration_electrophysiology_sample_5": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Registration of pyramidal cell electrophysiology mpg_5</span>"
+    },
+    "single_neuron_model_sample_5": {
+        "title": "Dataset",
+        "content": "<span><b>Name</b></span>\n    <br>\n    <span>Single neuron model of pyramidal cell mpg_5</span>"
+    },
+    "activity_creation_single_neuron_model_sample_5": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n    <br>\n    <span>Creation of single neuron model of sample 5</span>"
+    },
+    "activity_generation_circuit": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n      <br>\n      <span>Generation of circuit</span>"
+    },
+    "circuit": {
+        "title": "Circuit",
+        "content": "<span><b>Name</b></span>\n      <br>\n      <span>Circuit</span>"
+    },
+    "activity_creation_simulation": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n      <br>\n      <span>Creation of the simulation from the circuit</span>"
+    },
+    "simulation": {
+        "title": "Simulation",
+        "content": "<span><b>Name</b></span>\n      <br>\n      <span>Simulation</span>"
+    },
+    "activity_validation_simulation": {
+        "title": "Activity",
+        "content": "<span><b>Title</b></span>\n      <br>\n      <span>Validation of the simulation</span>"
+    },
+    "validation_simulation": {
+        "title": "Validation",
+        "content": "<span><b>Name</b></span>\n      <br>\n      <span>Validation of simulation</span>"
+    }
+};
+
+var NodeDetailService = (function () {
+    function NodeDetailService() {
+    }
+    /**
+     * @param {?} nodeId
+     * @return {?}
+     */
+    NodeDetailService.prototype.get = function (nodeId) {
+        //TODO: CHANGE BEHAVIOR (THIS BEHAVIOR IS FOR TEST PURPOSE ONLY)
+        if (DETAILS[nodeId]) {
+            var /** @type {?} */ information = {};
+            information['title'] = DETAILS[nodeId]['title'];
+            information['content'] = DETAILS[nodeId]['content'];
+            return information;
+        }
+        else {
+            throw 'Error occurred when retrieving data';
+        }
+    };
+    return NodeDetailService;
+}());
+NodeDetailService.decorators = [
+    { type: Injectable },
+];
+/**
+ * @nocollapse
+ */
+NodeDetailService.ctorParameters = function () { return []; };
+
+var NodeDetailComponent = (function () {
+    /**
+     * Constructor of DumperComponent
+     * @param {?} nodeDetailService Injection of Node detail service
+     */
+    function NodeDetailComponent(nodeDetailService) {
+        this.nodeDetailService = nodeDetailService;
+        this.ngNodeDetailViewClosed = new EventEmitter();
+    }
+    /**
+     * Lifecycle hook called when view of component has been fully initialized
+     * (see Angular documentation: https://angular.io/docs/ts/latest/guide/lifecycle-hooks.html#!#oninit)
+     * @return {?}
+     */
+    NodeDetailComponent.prototype.ngOnInit = function () {
+        this.fetchInformation();
+    };
+    /**
+     * Retrieves information of the node
+     * @return {?}
+     */
+    NodeDetailComponent.prototype.fetchInformation = function () {
+        var _this = this;
+        this.rendering = true;
+        this.error = false;
+        setTimeout(function () {
+            try {
+                var /** @type {?} */ data = _this.nodeDetailService.get(_this.nodeId);
+                _this.title = data['title'];
+                _this.content = data['content'];
+                _this.rendering = false;
+            }
+            catch (e) {
+                _this.handleError(e);
+            }
+        }, NodeDetailComponent.delay);
+    };
+    /**
+     * Sends an event to inform parent that user closed the view
+     * @return {?}
+     */
+    NodeDetailComponent.prototype.close = function () {
+        this.ngNodeDetailViewClosed.emit();
+    };
+    /**
+     * Handles error
+     * @param {?} exception Exception raised during retrieve and display of node details
+     * @return {?}
+     */
+    NodeDetailComponent.prototype.handleError = function (exception) {
+        this.rendering = false;
+        this.error = true;
+        console.error(exception);
+    };
+    return NodeDetailComponent;
+}());
+NodeDetailComponent.delay = 500;
+NodeDetailComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'node-detail',
+                providers: [NodeDetailService],
+                inputs: ['nodeId'],
+                outputs: ['ngNodeDetailViewClosed'],
+                template: "<div class=\"card rendering\" *ngIf=\"rendering\"> <div class=\"card-block\"> <i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw fa-4x\"></i> <br/> <span>Retrieving information</span> <br/> <a class=\"text-primary\" (click)=\"close()\">[cancel]</a> </div> </div> <div class=\"card error\" *ngIf=\"error\"> <div class=\"card-block\"> <i class=\"fa fa-exclamation-circle fa-fw fa-4x\"></i> <br/> <span>Information could not be retrieved</span> <br/> <a class=\"text-primary\" (click)=\"close()\">[close]</a> </div> </div> <div id=\"node-information\" class=\"card\" *ngIf=\"!rendering && !error\"> <h3 class=\"card-header\">{{title}} <i id=\"close\" class=\"fa fa-times\" aria-hidden=\"true\" (click)=\"close()\"></i></h3> <div class=\"card-block text-justify\" [innerHTML]=\"content\"> </div> </div> ",
+                styles: [":host { position: absolute; bottom: 0; right: 0; margin-right: 10px; margin-bottom: 10px; width: 30vw; height: 30vh; } div { width: 100%; height: 100%; overflow: scroll; } #close { float: right; } .rendering, .error { width: 100%; height: 100%; } #node-information > .card-header { background-color: #0275d8; color: #ffffff; } .rendering > .card-block { display: flex; flex-direction: column; align-items: center; justify-content: center; } .error > .card-block { background-color: rgba(255, 0, 0, 0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; } .rendering > i { align-self: center; color: #0275d8; } "]
+            },] },
+];
+/**
+ * @nocollapse
+ */
+NodeDetailComponent.ctorParameters = function () { return [
+    { type: NodeDetailService, },
+]; };
 
 var Node = (function () {
     /**
@@ -587,6 +3263,7 @@ var Graph = (function () {
      */
     Graph.prototype.createCompleteGraph = function () {
         this.convertNodesAndEdges();
+        this.removeAgents();
         this.storeCompleteGraph();
     };
     /**
@@ -741,7 +3418,6 @@ var Graph = (function () {
      * @return {?}
      */
     Graph.prototype.convertNodesAndEdgesForSimpleGraph = function () {
-        this.removeAgents();
         this.mergeDatasetsAndRelatedResources();
         this.removeActivities();
     };
@@ -750,9 +3426,57 @@ var Graph = (function () {
      * @return {?}
      */
     Graph.prototype.removeAgents = function () {
-        var /** @type {?} */ agentsId = this.nodesOfSimplifiedGraph.filter(function (n) { return n.getType() === 'agent'; }).map(function (n) { return n.getId(); });
-        this.nodesOfSimplifiedGraph = this.nodesOfSimplifiedGraph.filter(function (n) { return !includes(agentsId, n.getId()); });
-        this.edgesOfSimplifiedGraph = this.edgesOfSimplifiedGraph.filter(function (e) { return !(includes(agentsId, e.getSource()) && !(includes(agentsId, e.getTarget()))); });
+        var /** @type {?} */ activities = this.nodes.filter(function (n) { return n.getType() === 'activity'; });
+        for (var _i = 0, activities_1 = activities; _i < activities_1.length; _i++) {
+            var activity = activities_1[_i];
+            this.mergeActivityAndRelatedAgents(activity);
+        }
+    };
+    /**
+     * @param {?} activity
+     * @return {?}
+     */
+    Graph.prototype.mergeActivityAndRelatedAgents = function (activity) {
+        var _this = this;
+        var /** @type {?} */ agentsId = this.edges.filter(function (e) { return (e.getTarget() === activity.getId()) && _this.checkIfElementIsAgent(e.getSource(), _this.nodes); }).map(function (e) { return e.getSource(); });
+        this.changeLabelOfActivity(activity, agentsId);
+        this.removeAgentsFromGraph(agentsId);
+    };
+    /**
+     * Checks if element is an agent
+     * @param {?} elementId Identifier of element to check
+     * @param {?} nodes Nodes to consider when searching for element
+     * @return {?} True if element is an agent, false otherwise
+     */
+    Graph.prototype.checkIfElementIsAgent = function (elementId, nodes) {
+        var /** @type {?} */ element = nodes.find(function (n) { return n.getId() === elementId; });
+        return element && (element.getType() === 'agent' || element.get('subType') === 'agent');
+    };
+    /**
+     * Changes the label of an activity to show number of collaborators it contains
+     * @param {?} activity Activity for which label is modified
+     * @param {?} agentsId
+     * @return {?}
+     */
+    Graph.prototype.changeLabelOfActivity = function (activity, agentsId) {
+        var /** @type {?} */ agentsList = this.nodes.filter(function (n) { return includes(agentsId, n.getId()); });
+        var /** @type {?} */ nbOfCollaborators = 0;
+        for (var _i = 0, agentsList_1 = agentsList; _i < agentsList_1.length; _i++) {
+            var agents = agentsList_1[_i];
+            if (agents.get('subType') === 'contributor') {
+                nbOfCollaborators++;
+            }
+        }
+        activity.append('label', "<br><br>" + (nbOfCollaborators === 0 ? 'no' : nbOfCollaborators) + " contributor" + (nbOfCollaborators > 1 ? 's' : ''));
+    };
+    /**
+     * Removes all the agents from the the graph
+     * @param {?} agentsId Identifiers of all the agents
+     * @return {?}
+     */
+    Graph.prototype.removeAgentsFromGraph = function (agentsId) {
+        this.nodes = this.nodes.filter(function (n) { return !includes(agentsId, n.getId()); });
+        this.edges = this.edges.filter(function (e) { return !includes(agentsId, e.getSource()); });
     };
     /**
      * Merges all the resources with their respective datasets
@@ -772,7 +3496,8 @@ var Graph = (function () {
      * @return {?}
      */
     Graph.prototype.mergeDatasetAndRelatedResources = function (dataset) {
-        var /** @type {?} */ resourcesId = this.edgesOfSimplifiedGraph.filter(function (e) { return e.getTarget() === dataset.getId(); }).map(function (e) { return e.getSource(); });
+        var _this = this;
+        var /** @type {?} */ resourcesId = this.edgesOfSimplifiedGraph.filter(function (e) { return (e.getTarget() === dataset.getId()) && _this.checkIfElementIsResource(e.getSource(), _this.nodesOfSimplifiedGraph); }).map(function (e) { return e.getSource(); });
         if (Array.isArray(resourcesId) && resourcesId.length) {
             var /** @type {?} */ resources = this.nodesOfSimplifiedGraph.filter(function (n) { return includes(resourcesId, n.getId()); });
             dataset.set('members', []);
@@ -783,6 +3508,16 @@ var Graph = (function () {
             this.changeLabelOfDataset(dataset, resources);
             this.removeResourcesFromSimplifiedGraph(resourcesId);
         }
+    };
+    /**
+     * Checks if element is a resource
+     * @param {?} elementId Identifier of element to check
+     * @param {?} nodes
+     * @return {?} True if element is a resource, false otherwise
+     */
+    Graph.prototype.checkIfElementIsResource = function (elementId, nodes) {
+        var /** @type {?} */ element = nodes.find(function (n) { return n.getId() === elementId; });
+        return element && (element.getType() === 'resource' || element.get('subType') === 'resource');
     };
     /**
      * Links a given dataset with all elements that are linked with resource it is linked with
@@ -823,8 +3558,8 @@ var Graph = (function () {
      */
     Graph.prototype.removeActivities = function () {
         var /** @type {?} */ activities = this.nodesOfSimplifiedGraph.filter(function (n) { return n.getType() === 'activity' || n.get('subtype') === 'activity'; });
-        for (var _i = 0, activities_1 = activities; _i < activities_1.length; _i++) {
-            var activity = activities_1[_i];
+        for (var _i = 0, activities_2 = activities; _i < activities_2.length; _i++) {
+            var activity = activities_2[_i];
             this.linkSourcesAndGeneratedEntitiesOfActivity(activity);
         }
         this.nodesOfSimplifiedGraph = this.nodesOfSimplifiedGraph.filter(function (n) { return n.getType() === 'entity'; });
@@ -926,6 +3661,19 @@ var MapperService = (function () {
         else {
             return (this.globalGraph && this.globalGraph.getGraphlibRepresentationOfGraph()) || null;
         }
+    };
+    /**
+     * Retrieves the identifier of the added nodes during expand of graph
+     * @param {?} input Data of the subgraph to be appended to the global graph
+     * @param {?} entitiesOnly True if only new added entities must be considered, false otherwise
+     * @return {?} List of identifiers of added nodes, null if input does not contain nodes
+     */
+    MapperService.prototype.retrieveNewNodesId = function (input, entitiesOnly) {
+        if (input && input['graph'] && input['graph']['nodes']) {
+            var /** @type {?} */ data = entitiesOnly ? filter(input['graph']['nodes'], ['type', 'entity']) : input['graph']['nodes'];
+            return map(data, 'id');
+        }
+        return null;
     };
     /**
      * Creates the Provenance graph
@@ -1032,7 +3780,7 @@ var SHAPE_ATTRIBUTES = {
         'paddingTop': '15'
     }
 };
-var COLORS = {
+var NODE_COLORS = {
     'entity': {
         'background': '#FFFC87',
         'border': 'transparent'
@@ -1048,6 +3796,9 @@ var COLORS = {
     'default': {
         'background': 'white',
         'border': 'black'
+    },
+    'selected': {
+        'background': '#B5D1FF'
     }
 };
 
@@ -1134,9 +3885,9 @@ var GraphFormatterService = (function () {
     GraphFormatterService.prototype.setNodeColor = function (node) {
         var /** @type {?} */ type = node.getType();
         var /** @type {?} */ subType = node.get('subType');
-        var /** @type {?} */ colorProperties = (node.get('color') && isObject(node.get('color'))) ? node.get('color') : (COLORS[type] || COLORS[subType] || COLORS['default']);
-        var /** @type {?} */ backgroundColor = colorProperties['background'] || COLORS['default']['background'];
-        var /** @type {?} */ borderColor = colorProperties['border'] || COLORS['default']['border'];
+        var /** @type {?} */ colorProperties = (node.get('color') && isObject(node.get('color'))) ? node.get('color') : (NODE_COLORS[type] || NODE_COLORS[subType] || NODE_COLORS['default']);
+        var /** @type {?} */ backgroundColor = colorProperties['background'] || NODE_COLORS['default']['background'];
+        var /** @type {?} */ borderColor = colorProperties['border'] || NODE_COLORS['default']['border'];
         node.set('style', "fill: " + backgroundColor + "; stroke: " + borderColor + ";");
     };
     /**
@@ -1198,6 +3949,572 @@ GraphFormatterService.decorators = [
  */
 GraphFormatterService.ctorParameters = function () { return []; };
 
+var MENU_IDENTIFIER = 'node-context-menu';
+var d3Container;
+var openCallback;
+var closeCallback;
+var userContext;
+var menu;
+var menuContent;
+var element;
+var elementIndex;
+var elementContent;
+var displayFromLeftToRight;
+/**
+ * Initializes context menu logic
+ * @param {?} content Menu
+ * @param {?=} options (optional) Options for menu (see setOptions function for more details)
+ * @return {?} Function that allows to build and display a menu
+ */
+function contextMenu(content, options) {
+    setOptions(options);
+    addCloseMenuEvent();
+    /**
+     * This is the function that will be executed when user wants to create a new menu following some event captured by d3
+     * data refers to the data of the element for which the context menu is created
+     * index refers to the index of the element
+     */
+    return function (data, index) {
+        removeOpenedMenu();
+        restoreDirectionForExpand();
+        createMenu(this, data, index, content);
+        setInitialPositionOfMenu();
+        ignoreDefaultContextMenuOfBrowserForContainer(MENU_IDENTIFIER);
+        setMenuStyles(MENU_IDENTIFIER);
+        createItemsList(MENU_IDENTIFIER, menuContent);
+        addHandlersOnListItems(MENU_IDENTIFIER);
+        fireOpenCallbackIfAny();
+        adjustPositionOfMenuIfNeeded();
+        preventDefaultAndStopPropagation();
+    };
+}
+/**
+ * Creates a submenu
+ * @param {?} content Content of the submenu
+ * @param {?} itemIndexInParentList Index of the item in the parent menu and for which submenu is associated
+ * @param {?} parentId Identifier of the parent menu
+ * @param {?} level Level of the submenu
+ * @return {?}
+ */
+function createSubMenu(content, itemIndexInParentList, parentId, level) {
+    var /** @type {?} */ subMenuId = "sub-menu-" + level;
+    removeOpenedMenu(subMenuId);
+    appendSubMenu(parentId, subMenuId);
+    ignoreDefaultContextMenuOfBrowserForContainer(subMenuId);
+    setInitialPositionOfSubMenu(parentId, subMenuId, itemIndexInParentList);
+    setMenuStyles(subMenuId);
+    createItemsList(subMenuId, content);
+    addHandlersOnListItems(subMenuId, level + 1);
+    adjustPositionOfSubMenuIfNeeded(parentId, subMenuId, itemIndexInParentList);
+    preventDefaultAndStopPropagation();
+}
+/**
+ * Sets the options of the menu
+ * @param {?} options Options to be applied to the menu
+ * For now, available options are:
+ * - openCallback (function to execute when menu is opened)
+ * - closeCallback (function to execute when menu is closed)
+ * - userContext (context to bind with menu for usage in action handler)
+ * - container (default: 'body') (identifier or tag of the container that contains all the elements that have context menu; this is used when determining position of a menu and a submenu (relative positioning))
+ * @return {?}
+ */
+function setOptions(options) {
+    openCallback = options && options['openCallback'];
+    closeCallback = options && options['closeCallback'];
+    userContext = options && options['context'];
+    d3Container = select((options && options['container']) || 'body');
+}
+/**
+ * Sets the close event for menu
+ * @return {?}
+ */
+function addCloseMenuEvent() {
+    d3Container.on('click', function () {
+        d3Container.select("#" + MENU_IDENTIFIER).remove();
+        fireCloseCallbackIfAny();
+    });
+}
+/**
+ * Executes close callback if one was provided by user in the options
+ * @return {?}
+ */
+function fireCloseCallbackIfAny() {
+    if (closeCallback && (typeof closeCallback === 'function')) {
+        closeCallback();
+    }
+}
+/**
+ * Creates the menu and appends the aforesaid menu in the DOM
+ * @param {?} d3Element d3 element on which the context menu is opened
+ * @param {?} data Data of the d3 element
+ * @param {?} index Index of the d3 element
+ * @param {?} content Menu content
+ * @return {?}
+ */
+function createMenu(d3Element, data, index, content) {
+    element = d3Element;
+    elementContent = data;
+    elementIndex = index;
+    menuContent = content;
+    menu = d3Container.append('div').attr('id', MENU_IDENTIFIER);
+}
+/**
+ * Removes menu if it is opened
+ * @param {?=} menuId Identifier of the menu to be removed
+ * @return {?}
+ */
+function removeOpenedMenu(menuId) {
+    if (menuId === void 0) { menuId = MENU_IDENTIFIER; }
+    selectAll("#" + menuId).remove();
+}
+/**
+ * Restores the direction of expand to left to right
+ * @return {?}
+ */
+function restoreDirectionForExpand() {
+    displayFromLeftToRight = true;
+}
+/**
+ * Sets the initial position of the menu when it is created
+ * By default, position is the mouse position
+ * @return {?}
+ */
+function setInitialPositionOfMenu() {
+    var /** @type {?} */ mousePositionRelativeToD3Container = mouse(d3Container.node());
+    menu.style('position', 'absolute').style('left', mousePositionRelativeToD3Container[0] + "px").style('top', mousePositionRelativeToD3Container[1] + "px");
+}
+/**
+ * Prevents opening of the original context menu (from the browser)
+ * @param {?} containerId Identifier of the container for which original context menu must be prevented from opening
+ * @return {?}
+ */
+function ignoreDefaultContextMenuOfBrowserForContainer(containerId) {
+    select("#" + containerId).on('contextmenu', function () {
+        event.preventDefault();
+    });
+}
+/**
+ * Defines the styles of the menu
+ * @param {?} containerId Identifier of the container (menu or submenu) for which styles must be defined
+ * @return {?}
+ */
+function setMenuStyles(containerId) {
+    select("#" + containerId).style('display', 'block')
+        .style('background-color', 'white')
+        .style('border-radius', '5px')
+        .style('border', '1px solid #D4D4D4')
+        .style('z-index', '999');
+}
+/**
+ * Creates the list of items
+ * @param {?} containerId Identifier of the container (menu or submenu) for which items must be appended to
+ * @param {?} listContent Content of the list (menu or submenu)
+ * @return {?}
+ */
+function createItemsList(containerId, listContent) {
+    var /** @type {?} */ list = select("#" + containerId).append('ul');
+    createItems(list, listContent);
+    setListStyles(list);
+    setListItemsStyles(list);
+}
+/**
+ * Creates the items of the list
+ * @param {?} list List to which items must be appended
+ * @param {?} listContent Content of the list
+ * @return {?}
+ */
+function createItems(list, listContent) {
+    list.selectAll('li').data((typeof listContent === 'function') ? listContent(elementContent) : listContent)
+        .enter()
+        .append('li')
+        .attr('class', function (itemOfList) { return itemOfList.class; })
+        .html(function (itemOfList) { return (typeof itemOfList.content === 'function') ? itemOfList.content(elementContent) : itemOfList.content; });
+}
+/**
+ * Defines the styles of the list
+ * @param {?} list List for which styles must be defined
+ * @return {?}
+ */
+function setListStyles(list) {
+    list.style('list-style-type', 'none')
+        .style('margin', '0px')
+        .style('padding', '0px')
+        .style('cursor', 'default');
+}
+/**
+ * Defines the styles of list items
+ * @param {?} list List for which items styles must be defined
+ * @return {?}
+ */
+function setListItemsStyles(list) {
+    list.selectAll('li').style('padding', '5px 16px');
+}
+/**
+ * Sets the handlers associated to each item of a menu/submenu list
+ * @param {?} containerId Identifier of the menu/submenu containing items for which handlers must be set
+ * @param {?=} level (default is 1) Level of the menu
+ * @return {?}
+ */
+function addHandlersOnListItems(containerId, level) {
+    if (level === void 0) { level = 1; }
+    var /** @type {?} */ list = select("#" + containerId).select('ul');
+    list.selectAll('li').each(function (itemContent, index) {
+        var /** @type {?} */ currentItem = select(this);
+        addOnHoverHandlerOnItem(currentItem, index, containerId, level);
+        if (!itemContent.subMenu) {
+            addClickHandlerOnItem(currentItem);
+        }
+    });
+}
+/**
+ * Sets the mouseover and mouseout handlers for a given item of a menu/submenu list
+ * @param {?} item d3 element for which handlers must be set
+ * @param {?} index Index of the item
+ * @param {?} parentId Identifier of the parent (menu/submenu list)
+ * @param {?} level Level of the menu
+ * @return {?}
+ */
+function addOnHoverHandlerOnItem(item, index, parentId, level) {
+    item.on('mouseover', function (itemContent) {
+        removeOpenedMenu("sub-menu-" + level);
+        item.style('background-color', '#0275d8').style('color', 'white');
+        if (itemContent.subMenu) {
+            createSubMenu(itemContent.subMenu, index, parentId, level);
+        }
+    })
+        .on('mouseout', function () {
+        item.style('background-color', 'white').style('color', 'black');
+    });
+}
+/**
+ * Sets the click handler for a given item of a menu/submenu list
+ * @param {?} item d3 element for which handler must be set
+ * @return {?}
+ */
+function addClickHandlerOnItem(item) {
+    item.on('click', function (itemContent) {
+        if (itemContent.action && !itemContent.disabled) {
+            itemContent.action(element, elementContent, elementIndex, userContext);
+            removeOpenedMenu();
+            restoreDirectionForExpand();
+        }
+        fireCloseCallbackIfAny();
+    });
+}
+/**
+ * Executes open callback if one was provided by user in the options
+ * @return {?}
+ */
+function fireOpenCallbackIfAny() {
+    if (openCallback && (typeof openCallback === 'function')) {
+        openCallback();
+    }
+}
+/**
+ * Adjusts the position of menu if there is overflow when displaying from left to right
+ * @return {?}
+ */
+function adjustPositionOfMenuIfNeeded() {
+    var /** @type {?} */ mousePositionRelativeToD3Container = mouse(d3Container.node());
+    var /** @type {?} */ containerSize = [d3Container.node().offsetWidth, d3Container.node().offsetHeight];
+    var /** @type {?} */ menuSize = [select("#" + MENU_IDENTIFIER).node().offsetWidth, select("#" + MENU_IDENTIFIER).node().offsetHeight];
+    // If display strategy is not left to right anymore, we follow the new one (left to right)
+    if (!displayFromLeftToRight || (menuSize[0] + mousePositionRelativeToD3Container[0] > containerSize[0])) {
+        displayFromLeftToRight = false;
+        menu.style('left', mousePositionRelativeToD3Container[0] - menuSize[0] + "px");
+    }
+    if (menuSize[1] + mousePositionRelativeToD3Container[1] > containerSize[1]) {
+        menu.style('top', mousePositionRelativeToD3Container[1] - menuSize[1] + "px");
+    }
+}
+/**
+ * Prevents default event to be fired and avoids propagation
+ * @return {?}
+ */
+function preventDefaultAndStopPropagation() {
+    event.preventDefault();
+    event.stopPropagation();
+}
+/**
+ * Creates a submenu and appends the aforesaid submenu to its parent
+ * @param {?} parentId Identifier of parent menu/submenu
+ * @param {?} subMenuId Identifier of the submenu being created
+ * @return {?}
+ */
+function appendSubMenu(parentId, subMenuId) {
+    select("#" + parentId).append('div').attr('id', "" + subMenuId);
+}
+/**
+ * Defines initial position of submenu (next to the parent menu/submenu, at the same level)
+ * @param {?} parentId Identifier of parent menu/submenu
+ * @param {?} subMenuId Identifier of the submenu for which initial position must be set
+ * @param {?} itemIndexInParentList Index of the item to which the submenu is associated in parent menu/submenu
+ * @return {?}
+ */
+function setInitialPositionOfSubMenu(parentId, subMenuId, itemIndexInParentList) {
+    var /** @type {?} */ parent = select("#" + parentId);
+    var /** @type {?} */ subMenu = select("#" + subMenuId);
+    var /** @type {?} */ itemInParentList = parent.select("li:nth-child(" + (itemIndexInParentList + 1) + ")");
+    var /** @type {?} */ parentWidth = parent.node().offsetWidth;
+    var /** @type {?} */ itemPositionFromTopRelatedToList = itemInParentList.node().getBoundingClientRect().top - parent.node().getBoundingClientRect().top;
+    subMenu.style('position', 'absolute')
+        .style('left', parentWidth + "px")
+        .style('top', itemPositionFromTopRelatedToList + "px");
+}
+/**
+ * @param {?} parentId Identifier of parent menu/submenu
+ * Adjusts the position of submenu if there is overflow when displaying from left to right
+ * @param {?} subMenuId Identifier of the submenu
+ * @param {?} itemIndexInParentList Index of the item to which the submenu is associated in parent menu/submenu
+ * @return {?}
+ */
+function adjustPositionOfSubMenuIfNeeded(parentId, subMenuId, itemIndexInParentList) {
+    var /** @type {?} */ subMenu = select("#" + subMenuId);
+    var /** @type {?} */ parent = select("#" + parentId);
+    var /** @type {?} */ itemInParentList = parent.select("li:nth-child(" + (itemIndexInParentList + 1) + ")");
+    var /** @type {?} */ parentWidth = parent.node().offsetWidth;
+    var /** @type {?} */ containerWidth = d3Container.node().offsetWidth;
+    var /** @type {?} */ containerHeight = d3Container.node().offsetHeight;
+    var /** @type {?} */ parentPositionFromTopRelatedToContainer = parent.node().getBoundingClientRect().left - d3Container.node().getBoundingClientRect().left;
+    var /** @type {?} */ itemInParentListHeight = itemInParentList.node().offsetHeight;
+    var /** @type {?} */ itemPositionInParentListFromTopAndRelatedToContainer = itemInParentList.node().getBoundingClientRect().top - d3Container.node().getBoundingClientRect().top;
+    var /** @type {?} */ itemPositionInParentListFromTopAndRelatedToParent = itemInParentList.node().getBoundingClientRect().top - parent.node().getBoundingClientRect().top;
+    if (!displayFromLeftToRight || (subMenu.node().offsetWidth + parentPositionFromTopRelatedToContainer + parentWidth > containerWidth)) {
+        displayFromLeftToRight = false;
+        // IMPORTANT: Fix to retrieve the correct offset width of the submenu
+        // (for unknown reason, the value is not updated correctly...)
+        subMenu.style('left', -subMenu.node().offsetWidth + "px");
+        subMenu.style('left', -subMenu.node().offsetWidth + "px");
+    }
+    if (subMenu.node().offsetHeight + itemPositionInParentListFromTopAndRelatedToContainer > containerHeight) {
+        var /** @type {?} */ adjustedPositionOfSubMenuFromTop = itemPositionInParentListFromTopAndRelatedToParent + itemInParentListHeight - subMenu.node().offsetHeight;
+        subMenu.style('top', adjustedPositionOfSubMenuFromTop + "px");
+    }
+}
+
+var MENUS = {
+    "entity": [
+        {
+            "content": "Information",
+            "action": function (element, data, index, context) {
+                context.dispatch.call('nodeMoreInfoAsked', context, context.containerElement, data);
+            }
+        },
+        {
+            "content": "Similar data",
+            "subMenu": [
+                {
+                    "content": "From same specimen",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    }
+                },
+                {
+                    "content": "From same activity",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    }
+                }
+            ]
+        },
+        {
+            "content": "Extend",
+            "subMenu": [
+                {
+                    "content": "Sources",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    },
+                    "subMenu": [
+                        {
+                            "content": "1 level",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "3 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "5 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "Complete Provenance",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "Custom",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        }
+                    ]
+                },
+                {
+                    "content": "Derivations",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    },
+                    "subMenu": [
+                        {
+                            "content": "1 level",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "3 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "5 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "Custom",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "content": "Contributors"
+        }
+    ],
+    "dataset": [
+        {
+            "content": "Information",
+            "action": function (element, data, index, context) {
+                context.dispatch.call('nodeMoreInfoAsked', context, context.containerElement, data);
+            }
+        },
+        {
+            "content": "Similar data",
+            "subMenu": [
+                {
+                    "content": "From same specimen",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    }
+                },
+                {
+                    "content": "From same brain region",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    }
+                }
+            ]
+        },
+        {
+            "content": "Extend",
+            "subMenu": [
+                {
+                    "content": "Sources",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    },
+                    "subMenu": [
+                        {
+                            "content": "1 level",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "3 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "5 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "Complete Provenance",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "Custom",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        }
+                    ]
+                },
+                {
+                    "content": "Derivations",
+                    "action": function (element, data, index, context) {
+                        //TODO
+                    },
+                    "subMenu": [
+                        {
+                            "content": "1 level",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "3 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "5 levels",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        },
+                        {
+                            "content": "Custom",
+                            "action": function (element, data, index, context) {
+                                //TODO
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "content": "Contributors"
+        }
+    ],
+    "activity": [
+        {
+            "content": "Information",
+            "action": function (element, data, index, context) {
+                context.dispatch.call('nodeMoreInfoAsked', context, context.containerElement, data);
+            }
+        },
+        {
+            "content": "Contributors",
+            "action": function (element, data, index, context) {
+                //TODO
+            }
+        }
+    ]
+};
+
 var EVENTS = {
     'graphRendered': function (element) {
         var /** @type {?} */ event$$1 = new Event('graphRendered');
@@ -1218,17 +4535,20 @@ var EVENTS = {
     'nodeCtrlClicked': function (element, nodeId) {
         dispatchNodeEvent('nodeCtrlClicked', element, nodeId);
     },
-    'edgeClicked': function (element, data) {
-        dispatchEdgeEvent('edgeClicked', element, data);
-    },
-    'edgeCtrlClicked': function (element, data) {
-        dispatchEdgeEvent('edgeCtrlClicked', element, data);
-    },
     'nodeExpandedUp': function (element, nodeId) {
         dispatchNodeExpandEvent('nodeExpanded', element, nodeId, 'up');
     },
     'nodeExpandedDown': function (element, nodeId) {
         dispatchNodeExpandEvent('nodeExpanded', element, nodeId, 'down');
+    },
+    'nodeMoreInfoAsked': function (element, nodeId) {
+        dispatchNodeEvent('nodeMoreInfoAsked', element, nodeId);
+    },
+    'edgeClicked': function (element, data) {
+        dispatchEdgeEvent('edgeClicked', element, data);
+    },
+    'edgeCtrlClicked': function (element, data) {
+        dispatchEdgeEvent('edgeCtrlClicked', element, data);
     }
 };
 /**
@@ -1363,11 +4683,63 @@ var DagreD3RendererService = (function () {
         this.container.transition().duration(delay).call(this.zoom.scaleBy, this.zoomOutMultiplicator);
     };
     /**
-     * Removes rendered graph if any
+     * Removes rendered graph if any and unselected node if any selected
      * @return {?}
      */
     DagreD3RendererService.prototype.flush = function () {
+        if (this.selectedNodeId) {
+            this.selectedNodeId = null;
+        }
         select(this.containerElement).selectAll('svg').remove();
+    };
+    /**
+     * Selects a node in the graph
+     * @param {?} nodeId Identifier of the node being selected
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.selectNode = function (nodeId) {
+        if (this.selectedNodeId) {
+            this.unselectNode();
+        }
+        if (nodeId && this.graph.node(nodeId)) {
+            this.selectedNodeId = nodeId;
+            var /** @type {?} */ colorProperties = NODE_COLORS['selected'];
+            var /** @type {?} */ backgroundColor = colorProperties && colorProperties['background'];
+            var /** @type {?} */ borderColor = colorProperties && colorProperties['border'];
+            this.changeNodeColors(this.selectedNodeId, backgroundColor, borderColor);
+        }
+    };
+    /**
+     * Unselects the current selected node
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.unselectNode = function () {
+        if (this.selectedNodeId && this.graph.node(this.selectedNodeId)) {
+            var /** @type {?} */ node = this.graph.node(this.selectedNodeId);
+            var /** @type {?} */ colorProperties = (node['color'] && isObject(node['color'])) ? node['color'] : (NODE_COLORS[node['type']] || NODE_COLORS[node['subType']] || NODE_COLORS['default']);
+            var /** @type {?} */ backgroundColor = colorProperties['background'] || NODE_COLORS['default']['background'];
+            var /** @type {?} */ borderColor = colorProperties['border'] || NODE_COLORS['default']['border'];
+            this.changeNodeColors(this.selectedNodeId, backgroundColor, borderColor);
+            this.selectedNodeId = null;
+        }
+    };
+    /**
+     * Displays a set of nodes and associated edges with transition
+     * @param {?} nodesId Identifier of the nodes to be displayed with transition (with their respective edges)
+     * @param {?=} duration (default is 2000) Duration of the transition
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.displayNodesAndEdgesWithTransition = function (nodesId, duration) {
+        if (duration === void 0) { duration = 2000; }
+        this.displayNodesWithTransition(nodesId);
+        this.displayEdgesOfNodesWithTransition(nodesId);
+    };
+    /**
+     * Closes context menu if any opened
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.closeContextMenu = function () {
+        selectAll('.node-context-menu').remove();
     };
     /**
      * Sets the options related to the renderer
@@ -1381,7 +4753,7 @@ var DagreD3RendererService = (function () {
         this.zoomInMultiplicator = options['zoom-in'] || 1.5;
         this.zoomOutMultiplicator = options['zoom-out'] || 0.75;
         this.containerElement = containerElement;
-        this.container = select(this.containerElement).append('svg:svg');
+        this.container = select(this.containerElement).append('svg:svg').style('user-select', 'none');
         this.group = this.container.append('g');
         this.render = new render();
     };
@@ -1406,6 +4778,7 @@ var DagreD3RendererService = (function () {
             // User clicked on the SVG element (graph)
             if (event.srcElement.tagName == 'svg') {
                 var /** @type {?} */ mousePosition = mouse(this);
+                that.unselectNode();
                 // Data passed to the event: graph container, DOM element, mouse position (x and y coordinates)
                 that.dispatch.call('graphClicked', that.container, that.containerElement, mousePosition[0], mousePosition[1]);
             }
@@ -1444,16 +4817,6 @@ var DagreD3RendererService = (function () {
      */
     DagreD3RendererService.prototype.constructGraph = function () {
         this.graph = graphlib.json.read(this.data);
-        this.setGraphTransition();
-    };
-    /**
-     * Sets transition for the graph (duration is 1000 ms)
-     * @return {?}
-     */
-    DagreD3RendererService.prototype.setGraphTransition = function () {
-        this.graph.graph().transition = function (selection) {
-            return selection.transition().duration(1000);
-        };
     };
     /**
      * Sets events attached to the nodes
@@ -1463,17 +4826,16 @@ var DagreD3RendererService = (function () {
         var _this = this;
         var /** @type {?} */ that = this;
         selectAll('.node')
-            .on('contextmenu', function () {
-            // We prevent the context menu from displaying when user CTRL+clicks
-            event.preventDefault();
-        })
+            .on('contextmenu', function (nodeId, index) { return contextMenu(_this.getMenuOfNode(nodeId), { 'context': _this, 'container': '#svg-container' })(nodeId, index); })
             .on('mousedown', function (nodeId) {
             event.stopPropagation();
             if (event.ctrlKey) {
                 _this.dispatch.call('nodeCtrlClicked', _this, _this.containerElement, nodeId);
             }
             else {
-                _this.dispatch.call('nodeClicked', _this, _this.containerElement, nodeId);
+                _this.selectNode(nodeId);
+                _this.closeContextMenu();
+                //this.dispatch.call('nodeClicked', this, this.containerElement, nodeId);
             }
         });
         selectAll('.expand-up')
@@ -1493,6 +4855,20 @@ var DagreD3RendererService = (function () {
             .on('mouseout', function () {
             select(this).attr('opacity', '0.2');
         });
+    };
+    /**
+     * Retrieves the menu of the node
+     * @param {?} nodeId Identifier of the node
+     * @return {?} Menu configuration
+     */
+    DagreD3RendererService.prototype.getMenuOfNode = function (nodeId) {
+        var /** @type {?} */ node = this.graph.node(nodeId);
+        if (node) {
+            return MENUS[node['subType']] || MENUS[node['type']] || MENUS['default'];
+        }
+        else {
+            return null;
+        }
     };
     /**
      * Sets events attached to the edges
@@ -1542,8 +4918,93 @@ var DagreD3RendererService = (function () {
     DagreD3RendererService.prototype.setWidthAndHeight = function () {
         this.container.attr('width', '100%').attr('height', '100%');
     };
+    /**
+     * Changes the colors of a node
+     * @param {?} nodeId Identifier of the node for which background color is being modified
+     * @param {?} backgroundColor Color to use for background
+     * @param {?} borderColor Color to use for border
+     * @param {?=} duration (default is 0) Duration of the transition
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.changeNodeColors = function (nodeId, backgroundColor, borderColor, duration) {
+        if (duration === void 0) { duration = 0; }
+        var /** @type {?} */ node = selectAll('.node').filter(function (id) { return id === nodeId; });
+        this.changeD3ElementsColors(node, backgroundColor, borderColor, duration);
+    };
+    /**
+     * Changes the colors of edges
+     * @param {?} sourceId Identifier of the source of the edge
+     * @param {?} targetId Identifier of the target of the edge
+     * @param {?} backgroundColor Color to use for background
+     * @param {?} borderColor Color to use for border
+     * @param {?=} duration (default is 0) Duration of the transition
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.changeEdgesColors = function (sourceId, targetId, backgroundColor, borderColor, duration) {
+        if (duration === void 0) { duration = 0; }
+        var /** @type {?} */ edges = selectAll('.edgePath').filter(function (data) { return data['v'] === sourceId && data['w'] === targetId; });
+        this.changeD3ElementsColors(edges, backgroundColor, borderColor, duration);
+    };
+    /**
+     * Changes the colors of d3 elements
+     * @param {?} d3Elements D3 selection
+     * @param {?} backgroundColor Color to use for background
+     * @param {?} borderColor Color to use for border
+     * @param {?=} duration (default is 0) Duration of the transition
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.changeD3ElementsColors = function (d3Elements, backgroundColor, borderColor, duration) {
+        if (duration === void 0) { duration = 0; }
+        d3Elements.each(function (d) {
+            select(this.childNodes[0]).transition().duration(duration).style('fill', backgroundColor).style('stroke', borderColor).attr('opacity', 1);
+        });
+    };
+    /**
+     * Displays a set of nodes with transition
+     * @param {?} nodesId Identifier of the nodes that must be displayed with transition
+     * @param {?=} duration (default is 2000) Duration of the transition
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.displayNodesWithTransition = function (nodesId, duration) {
+        if (duration === void 0) { duration = 2000; }
+        var /** @type {?} */ that = this;
+        var /** @type {?} */ newNodes = selectAll('.node').filter(function (id) { return includes(nodesId, id); });
+        if (newNodes) {
+            newNodes.each(function (d) {
+                // First child is the shape of the node
+                select(this.childNodes[0]).attr('opacity', 0).transition().duration(duration).attr('opacity', 1);
+                // Second child is the label
+                select(this.childNodes[1]).attr('opacity', 0).transition().duration(duration).attr('opacity', 1);
+                // We define specific opacity rule for expand buttons
+                select(this).select('.expand-up, .expand-down').attr('opacity', 0).transition().duration(duration).attr('opacity', 0.2);
+            });
+        }
+    };
+    /**
+     * Displays edges of a set of nodes with transition
+     * @param {?} nodesId Identifier of the nodes for which edges must be displayed with transition
+     * @param {?=} duration (default is 2000) Duration of the transition
+     * @return {?}
+     */
+    DagreD3RendererService.prototype.displayEdgesOfNodesWithTransition = function (nodesId, duration) {
+        if (duration === void 0) { duration = 2000; }
+        var /** @type {?} */ that = this;
+        var /** @type {?} */ newEdgesPath = selectAll('.edgePath').filter(function (data) { return includes(nodesId, data['v']); });
+        if (newEdgesPath) {
+            newEdgesPath.each(function (d) {
+                select(this.childNodes[0]).attr('opacity', 0).transition().duration(duration).attr('opacity', 1);
+            });
+        }
+        var /** @type {?} */ newEdgesLabel = selectAll('.edgeLabel').filter(function (data) { return includes(nodesId, data['v']); });
+        if (newEdgesLabel) {
+            newEdgesLabel.each(function (d) {
+                select(this.childNodes[0]).attr('opacity', 0).transition().duration(duration).attr('opacity', 1);
+            });
+        }
+    };
     return DagreD3RendererService;
 }());
+DagreD3RendererService.highlightDelay = 500;
 DagreD3RendererService.decorators = [
     { type: Injectable },
 ];
@@ -1555,14 +5016,17 @@ DagreD3RendererService.ctorParameters = function () { return []; };
 var GraphComponent = (function () {
     /**
      * Constructor of DumperComponent
-     * @param {?} mapperService Injection of Mapper service
-     * @param {?} graphFormatterService
+     * @param {?} componentFactoryResolver Injection of component factory resolver
+     * @param {?} mapperService Injection of mapper service
+     * @param {?} graphFormatterService Injection of graph formatter service
      * @param {?} dagreD3RendererService
      */
-    function GraphComponent(mapperService, graphFormatterService, dagreD3RendererService) {
+    function GraphComponent(componentFactoryResolver, mapperService, graphFormatterService, dagreD3RendererService) {
+        this.componentFactoryResolver = componentFactoryResolver;
         this.mapperService = mapperService;
         this.graphFormatterService = graphFormatterService;
         this.dagreD3RendererService = dagreD3RendererService;
+        this.componentFactory = this.componentFactoryResolver.resolveComponentFactory(NodeDetailComponent);
         this.mode = GraphComponent.defaultMode;
         this.initializeGraphEventsListeners();
     }
@@ -1583,9 +5047,19 @@ var GraphComponent = (function () {
     GraphComponent.prototype.ngOnChanges = function (changes) {
         this.rendering = true;
         this.error = false;
+        this.closeNodeDetailView();
+        this.closeContextMenu();
         this.createGraph();
         this.formatGraph();
         this.displayGraph();
+    };
+    /**
+     * Lifecycle hook called when component is destroyed
+     * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/OnDestroy-class.html)
+     * @return {?}
+     */
+    GraphComponent.prototype.ngOnDestroy = function () {
+        this.closeNodeDetailView();
     };
     /**
      * Changes the mode for rendering graph (swtich between simplified and extended versions)
@@ -1597,6 +5071,8 @@ var GraphComponent = (function () {
             this.mode = (mode === GraphComponent.simplifiedMode || mode === GraphComponent.extendedMode) ? mode : GraphComponent.defaultMode;
             this.rendering = true;
             this.error = false;
+            this.closeNodeDetailView();
+            this.closeContextMenu();
             this.displayGraph();
         }
     };
@@ -1622,7 +5098,7 @@ var GraphComponent = (function () {
         this.dagreD3RendererService.zoomOut(250);
     };
     /**
-     * Initializes the EventEmitter attached to the graph
+     * Initializes the event emitters attached to the graph
      * @return {?}
      */
     GraphComponent.prototype.initializeGraphEventsListeners = function () {
@@ -1642,15 +5118,22 @@ var GraphComponent = (function () {
         element.addEventListener('graphRendered', function (event$$1) {
             _this.rendering = false;
         });
+        // For graphClicked event, we append a specific event listener to close node view if any is opened
+        element.addEventListener('graphClicked', function (event$$1) {
+            _this.closeNodeDetailView();
+        });
         // For nodeExpanded event, we append a specific event listener to inform component that graph must be updated
         element.addEventListener('nodeExpanded', function (event$$1) {
-            //TODO: CHANGE BEHAVIOR (THIS BEHAVIOR IS FOR TEST PURPOSE ONLY)
-            var /** @type {?} */ nodeId = event$$1['detail']['nodeId'];
-            var /** @type {?} */ direction = event$$1['detail']['direction'];
-            if (EXPAND_DATA[nodeId]) {
-                _this.graph = _this.mapperService.extend(EXPAND_DATA[nodeId]);
-                _this.formatGraph();
-                _this.displayGraph();
+            var /** @type {?} */ nodeId = event$$1 && event$$1['detail'] && event$$1['detail']['nodeId'];
+            if (nodeId) {
+                _this.expandNode(nodeId);
+            }
+        });
+        // For nodeMoreInfoAsked event, we append a specific event listener to inform component that additional information must be displayed
+        element.addEventListener('nodeMoreInfoAsked', function (event$$1) {
+            var /** @type {?} */ nodeId = event$$1 && event$$1['detail'] && event$$1['detail']['nodeId'];
+            if (nodeId) {
+                _this.displayNodeDetails(nodeId);
             }
         });
         var _loop_1 = function (eventName) {
@@ -1713,7 +5196,62 @@ var GraphComponent = (function () {
             catch (e) {
                 _this.handleError(e, true);
             }
-        }, 500);
+        }, GraphComponent.delay);
+    };
+    /**
+     * Expands a given node of the graph
+     * @param {?} nodeId
+     * @return {?}
+     */
+    GraphComponent.prototype.expandNode = function (nodeId) {
+        var _this = this;
+        //TODO: CHANGE BEHAVIOR (THIS BEHAVIOR IS FOR TEST PURPOSE ONLY)
+        if (EXPAND_DATA[nodeId]) {
+            this.graph = this.mapperService.extend(EXPAND_DATA[nodeId]);
+            var /** @type {?} */ newNodesId = this.mapperService.retrieveNewNodesId(EXPAND_DATA[nodeId], (this.mode === GraphComponent.simplifiedMode));
+            this.formatGraph();
+            this.displayGraph();
+            setTimeout(function () {
+                _this.displayNewNodesAndConnectionsWithTransition(newNodesId);
+            }, GraphComponent.delay);
+        }
+    };
+    /**
+     * Displays nodes and their associated edges with transition
+     * @param {?} newNodesId Identifiers of the nodes (with their respective links) to be displayed with transition
+     * @return {?}
+     */
+    GraphComponent.prototype.displayNewNodesAndConnectionsWithTransition = function (newNodesId) {
+        this.dagreD3RendererService.displayNodesAndEdgesWithTransition(newNodesId);
+    };
+    /**
+     * Display information about a node
+     * @param {?} nodeId Identifier of the node
+     * @return {?}
+     */
+    GraphComponent.prototype.displayNodeDetails = function (nodeId) {
+        var _this = this;
+        this.nodeDetailContainer.clear();
+        this.nodeDetailComponentRef = this.nodeDetailContainer.createComponent(this.componentFactory);
+        this.nodeDetailComponentRef.instance.ngNodeDetailViewClosed.subscribe(function () { return _this.closeNodeDetailView(); });
+        this.nodeDetailComponentRef.instance.nodeId = nodeId;
+    };
+    /**
+     * Closes the view containing details of a node, if displayed
+     * @return {?}
+     */
+    GraphComponent.prototype.closeNodeDetailView = function () {
+        if (this.nodeDetailComponentRef) {
+            this.nodeDetailComponentRef.destroy();
+            this.dagreD3RendererService.unselectNode();
+        }
+    };
+    /**
+     * Closes context menu if any opened
+     * @return {?}
+     */
+    GraphComponent.prototype.closeContextMenu = function () {
+        this.dagreD3RendererService.closeContextMenu();
     };
     /**
      * Handles error
@@ -1735,26 +5273,29 @@ var GraphComponent = (function () {
 GraphComponent.defaultMode = 'simplified';
 GraphComponent.simplifiedMode = 'simplified';
 GraphComponent.extendedMode = 'extended';
+GraphComponent.delay = 500;
 GraphComponent.decorators = [
     { type: Component, args: [{
                 selector: 'graph',
                 providers: [MapperService, GraphFormatterService, DagreD3RendererService],
                 inputs: ['data:graph'],
                 outputs: ['ngGraphRendered', 'ngGraphClicked', 'ngNodeClicked', 'ngNodeCtrlClicked', 'ngEdgeClicked', 'ngEdgeCtrlClicked'],
-                template: "<div class=\"rendering\" *ngIf=\"rendering\"> <i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw fa-5x\"></i> </div> <div class=\"error\" *ngIf=\"error\"> <i class=\"fa fa fa-exclamation-circle fa-fw fa-5x\"></i> <br/> Graph could not be rendered. </div> <div ngbDropdown class=\"select-view\" *ngIf=\"!rendering && !error && graph && graph['provenance']\"> <button id=\"selectView\" class=\"btn btn-primary\" ngbDropdownToggle>Mode</button> <div class=\"dropdown-menu\" aria-labelledby=\"selectView\"> <button id=\"simplifiedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='simplified'\" (click)=\"changeMode('simplified')\">Simplified</button> <button id=\"extendedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='extended'\" (click)=\"changeMode('extended')\">Extended</button> </div> </div> <div id=\"zoom-controls\" *ngIf=\"!rendering && !error\"> <button id=\"zoom-fit\" class=\"btn btn-primary\" (click)=\"fitContent()\"><i class=\"fa fa-arrows-alt\"></i></button> <button id=\"zoom-in\" class=\"btn btn-primary\" (click)=\"zoomIn()\"><i class=\"fa fa-search-plus\"></i></button> <button id=\"zoom-out\" class=\"btn btn-primary\" (click)=\"zoomOut()\"><i class=\"fa fa-search-minus\"></i></button> </div> <div #svgContainer id=\"svg-container\"></div> ",
-                styles: [":host { height: 100%; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; border: 1px solid rgba(0, 0, 0, 0.15); overflow: hidden; } .rendering, .error { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; } .rendering { background-color: rgba(0, 0, 0, 0.025); } .error { background-color: rgba(255, 0, 0, 0.05); } .rendering > i { align-self: center; color: #0275d8; } .select-view { position: absolute; top: 0; right: 0; padding-top: 10px; padding-right: 10px; } .select-view > .dropdown-menu { left: auto; right: 10px; } .selected { color: white; background-color: #0275d8; } #svg-container { width: 100%; height: 100%; margin: 20px; } #zoom-controls { display: flex; flex-direction: column; position: absolute; top: 0; left: 0; padding-left: 10px; } #zoom-controls > button { margin-top: 10px; } "]
+                template: "<div class=\"rendering\" *ngIf=\"rendering\"> <i class=\"fa fa-circle-o-notch fa-spin fa-3x fa-fw fa-5x\"></i> </div> <div class=\"error\" *ngIf=\"error\"> <i class=\"fa fa-exclamation-circle fa-fw fa-5x\"></i> <br/> <span>Graph could not be rendered.</span> </div> <div ngbDropdown class=\"select-view\" *ngIf=\"!rendering && !error && graph && graph['provenance']\"> <button id=\"selectView\" class=\"btn btn-primary\" ngbDropdownToggle>Mode</button> <div class=\"dropdown-menu\" aria-labelledby=\"selectView\"> <button id=\"simplifiedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='simplified'\" (click)=\"changeMode('simplified')\">Simplified</button> <button id=\"extendedMode\" class=\"dropdown-item text-center\" [class.selected]=\"this.mode==='extended'\" (click)=\"changeMode('extended')\">Extended</button> </div> </div> <div id=\"zoom-controls\" *ngIf=\"!rendering && !error\"> <button id=\"zoom-fit\" class=\"btn btn-primary\" (click)=\"fitContent()\"><i class=\"fa fa-arrows-alt\"></i></button> <button id=\"zoom-in\" class=\"btn btn-primary\" (click)=\"zoomIn()\"><i class=\"fa fa-search-plus\"></i></button> <button id=\"zoom-out\" class=\"btn btn-primary\" (click)=\"zoomOut()\"><i class=\"fa fa-search-minus\"></i></button> </div> <div #svgContainer id=\"svg-container\"> <ng-template #nodeDetailContainer></ng-template> </div> ",
+                styles: [":host { height: 100%; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; border: 1px solid rgba(0, 0, 0, 0.15); overflow: hidden; } .rendering, .error { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; } .rendering { background-color: rgba(0, 0, 0, 0.025); } .error { background-color: rgba(255, 0, 0, 0.05); } .rendering > i { align-self: center; color: #0275d8; } .select-view { position: absolute; top: 0; right: 0; padding-top: 10px; padding-right: 10px; } .select-view > .dropdown-menu { left: auto; right: 10px; } .selected { color: white; background-color: #0275d8; } #svg-container { width: 100%; height: 100%; } #zoom-controls { display: flex; flex-direction: column; position: absolute; top: 0; left: 0; padding-left: 10px; } #zoom-controls > button { margin-top: 10px; } "]
             },] },
 ];
 /**
  * @nocollapse
  */
 GraphComponent.ctorParameters = function () { return [
+    { type: ComponentFactoryResolver, },
     { type: MapperService, },
     { type: GraphFormatterService, },
     { type: DagreD3RendererService, },
 ]; };
 GraphComponent.propDecorators = {
     'svgContainer': [{ type: ViewChild, args: ['svgContainer',] },],
+    'nodeDetailContainer': [{ type: ViewChild, args: ['nodeDetailContainer', { read: ViewContainerRef },] },],
 };
 
 var ProvVizModule = (function () {
@@ -1772,12 +5313,14 @@ var ProvVizModule = (function () {
 }());
 ProvVizModule.decorators = [
     { type: NgModule, args: [{
+                entryComponents: [NodeDetailComponent],
                 imports: [
                     CommonModule,
                     NgbModule.forRoot()
                 ],
                 declarations: [
-                    GraphComponent
+                    GraphComponent,
+                    NodeDetailComponent
                 ],
                 exports: [
                     GraphComponent
