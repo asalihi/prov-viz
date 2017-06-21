@@ -1,9 +1,11 @@
 import { ComponentFactoryResolver, EventEmitter } from '@angular/core';
+import { GraphService } from './graph.service';
 import { MapperService } from './mapper.service';
 import { GraphFormatterService } from './graph-formatter.service';
 import { DagreD3RendererService } from './dagre-d3-renderer.service';
 export declare class GraphComponent {
     private componentFactoryResolver;
+    private graphService;
     private mapperService;
     private graphFormatterService;
     private dagreD3RendererService;
@@ -18,7 +20,7 @@ export declare class GraphComponent {
     private formattedGraph;
     private nodeDetailComponentRef;
     private componentFactory;
-    data: Object;
+    sourceId: string;
     svgContainer: any;
     nodeDetailContainer: any;
     ngGraphRendered: EventEmitter<Object>;
@@ -35,7 +37,7 @@ export declare class GraphComponent {
      * @param graphFormatterService Injection of graph formatter service
      * @param dagreD3Renderer Injection of dagre-d3 renderer service
      */
-    constructor(componentFactoryResolver: ComponentFactoryResolver, mapperService: MapperService, graphFormatterService: GraphFormatterService, dagreD3RendererService: DagreD3RendererService);
+    constructor(componentFactoryResolver: ComponentFactoryResolver, graphService: GraphService, mapperService: MapperService, graphFormatterService: GraphFormatterService, dagreD3RendererService: DagreD3RendererService);
     /**
      * Lifecycle hook called when view of component has been fully initialized
      * (see Angular documentation: https://angular.io/docs/ts/latest/api/core/index/AfterViewInit-class.html)
