@@ -4988,12 +4988,12 @@ var DagreD3RendererService = (function () {
             _this.dispatch.call('nodeClicked', _this, _this.containerElement, nodeId);
         });
         d3.selectAll('.expand-up')
-            .on('mousedown', function (nodeId) {
+            .on('click', function (nodeId) {
             d3.event.stopPropagation();
             that.dispatch.call('nodeExpandedUp', that, that.containerElement, nodeId);
         });
         d3.selectAll('.expand-down')
-            .on('mousedown', function (nodeId) {
+            .on('cick', function (nodeId) {
             d3.event.stopPropagation();
             that.dispatch.call('nodeExpandedDown', that, that.containerElement, nodeId);
         });
@@ -5049,6 +5049,7 @@ var DagreD3RendererService = (function () {
      */
     DagreD3RendererService.prototype.formatText = function () {
         this.container.selectAll('svg text').style('font', "300 14px 'Helvetica Neue', Helvetica");
+        this.container.selectAll('svg g.label').style('font-weight', 'normal').style('color', 'black');
     };
     /**
      * Sets zoom functionality on the renderer
